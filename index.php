@@ -1,8 +1,27 @@
 <?php
 session_start();
+require 'db.php';
+
 $isLoggedIn = isset($_SESSION['user_id']);
 $defaultPic = 'uploads/default.jpeg';
 $pic = $isLoggedIn && !empty($_SESSION['profile_pic']) ? $_SESSION['profile_pic'] : $defaultPic;
+
+$sql = "SELECT posts.*, users.name, users.profile_pic 
+        FROM posts 
+        JOIN users ON posts.user_id = users.id 
+        ORDER BY posts.created_at DESC 
+        LIMIT 5"; // show latest 5 posts
+
+$result = $conn->query($sql);
+
+$latestPosts = [];
+if ($result && $result->num_rows > 0) 
+    while ($row = $result->fetch_assoc()) {
+        $latestPosts[] = $row;
+    }
+    // Fetch latest 3 events (adjust limit if needed)
+$eventQuery = "SELECT * FROM events ORDER BY event_date DESC LIMIT 3";
+$eventResult = $conn->query($eventQuery);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -186,6 +205,83 @@ ul.mission-list li {
   color: #3a0b2d;
   margin-bottom: 1rem;
 }
+.latest-posts {
+  max-width: 500px;
+  margin: 40px auto;
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+
+.latest-posts h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.post {
+  border-bottom: 1px solid #eee;
+  padding: 15px 0;
+}
+
+.post:last-child {
+  border-bottom: none;
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.post-image {
+  max-width: 100%;
+  margin-top: 10px;
+  border-radius: 8px;
+}
+.latest-events {
+  margin-left: 220px;
+  padding: 20px;
+}
+
+.event-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.event-card {
+  background: #222;
+  color: #fff;
+  display: flex;
+  gap: 15px;
+  padding: 15px;
+  border-radius: 8px;
+  align-items: flex-start;
+}
+
+.event-card img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.event-details h3 {
+  margin-top: 0;
+  color: #ff4081;
+}
+
+.event-details a {
+  color: #ffc107;
+  text-decoration: underline;
+}
 
 /* CTA */
 .cta {
@@ -243,21 +339,57 @@ footer {
 
       <hr />
 
-      <section id="about" class="section">
-        <h2>About Us </h2>
-        <p>WOMXN is a digital community built by and for queer women across Kenya. Whether you’re out, questioning, or exploring, this platform is your space.</p>
-      </section>
+      <section class="latest-posts">
+  <h2>Latest Posts</h2>
+  <?php if (empty($latestPosts)): ?>
+    <p>No posts yet.</p>
+  <?php else: ?>
+    <?php foreach ($latestPosts as $post): ?>
+      <div class="post">
+        <div class="post-header">
+          <img src="<?= htmlspecialchars($post['profile_pic']) ?>" alt="Profile" class="avatar">
+          <strong><?= htmlspecialchars($post['name']) ?></strong>
+        </div>
+        <p><?= nl2br(htmlspecialchars($post['content'])) ?></p>
+        <?php if (!empty($post['image'])): ?>
+          <img src="<?= htmlspecialchars($post['image']) ?>" class="post-image" alt="Post Image">
+        <?php endif; ?>
+        <small><?= date("F j, Y, g:i a", strtotime($post['created_at'])) ?></small>
+      </div>
+    <?php endforeach; ?>
+  <?php endif; ?>
+</section>
+
 
       <hr />
 
-      <section id="mission" class="section">
-        <h2>Our Mission </h2>
-        <ul class="mission-list">
-          <li>🏳️‍🌈 Celebrate and center queer Kenyan voices</li>
-          <li>🗓️ Promote safe meetups, events, and discussions</li>
-          <li>🎤 Share real stories and amplify queer experiences</li>
-        </ul>
-      </section>
+<section class="latest-events">
+  <h2>🎉 Upcoming Events</h2>
+
+  <?php if ($eventResult && $eventResult->num_rows > 0): ?>
+    <div class="event-list">
+      <?php while($event = $eventResult->fetch_assoc()): ?>
+        <div class="event-card">
+          <img src="post_uploads/<?= htmlspecialchars($event['image']) ?>" alt="Event Image">
+          <div class="event-details">
+            <h3><?= htmlspecialchars($event['title']) ?></h3>
+            <p><?= htmlspecialchars($event['description']) ?></p>
+            <p><strong>Date:</strong> <?= htmlspecialchars($event['event_date']) ?></p>
+            <?php if (!empty($event['ticket_link'])): ?>
+              <p><a href="<?= htmlspecialchars($event['ticket_link']) ?>" target="_blank">Get Tickets</a></p>
+            <?php endif; ?>
+          </div>
+        </div>
+      <?php endwhile; ?>
+    </div>
+  <?php else: ?>
+    <p>No events yet. Stay tuned!</p>
+  <?php endif; ?>
+</section>
+
+
+
+
 
       <hr />
 
