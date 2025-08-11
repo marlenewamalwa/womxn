@@ -38,11 +38,30 @@ $post_stmt->close();
 <head>
   <meta charset="UTF-8">
   <title>Your Profile</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700;800&display=swap" rel="stylesheet" />
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
+  * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  background-color: #ffe6f0;
+  color: #2b2b2b;
+}
+
+.container {
+  display: flex;
+  width: 100%;
+}
+ main {
+      margin-left: 240px;
       padding: 2rem;
+      flex: 1;
     }
     .profile-card {
       background: white;
@@ -85,6 +104,10 @@ $post_stmt->close();
   </style>
 </head>
 <body>
+   <div class="container">
+    <!-- Sidebar -->
+   <?php include 'sidebar.php'; ?>
+  <main>
   <div class="profile-card">
     <img src="<?= htmlspecialchars($profile_pic_url) ?>" alt="Profile Picture">
     <h2><?= htmlspecialchars($name) ?></h2>
@@ -104,5 +127,11 @@ $post_stmt->close();
       <small>Posted on <?= htmlspecialchars($post['created_at']) ?></small>
     </div>
   <?php endforeach; ?>
+
+
+  <?php if (empty($posts)): ?>
+    <p style="text-align:center;">You have not made any posts yet.</p>
+  <?php endif; ?>
+  </main>
 </body>
 </html>

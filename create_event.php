@@ -46,6 +46,13 @@ $stmt->bind_param("sssss", $title, $description, $event_date, $imageName, $ticke
 <head>
   <title>Create Event</title>
   <style>
+
+    body {
+      font-family: Poppins, sans-serif;
+      background-color: #ffe6f0;
+      margin: 0;
+      padding: 0;
+    }
     form {
       max-width: 600px;
       margin: 40px auto;
@@ -54,7 +61,7 @@ $stmt->bind_param("sssss", $title, $description, $event_date, $imageName, $ticke
       border-radius: 10px;
     }
     input, textarea {
-      width: 100%;
+      width: 80%;
       margin-bottom: 15px;
       padding: 10px;
       font-size: 16px;

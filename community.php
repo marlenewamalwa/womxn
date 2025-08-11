@@ -6,26 +6,18 @@ require_once 'db.php';
 $isLoggedIn = isset($_SESSION['user_id']);
 $pic = $isLoggedIn ? $_SESSION['profile_pic'] ?? 'uploads/default.jpeg' : 'uploads/default.jpeg';
 
-// Fetch all users
-$sql = "SELECT name, pronouns, profile_pic FROM users ORDER BY name ASC";
-$result = $conn->query($sql);
-
-// Handle search query
-$isLoggedIn = isset($_SESSION['user_id']);
-$pic = $isLoggedIn ? $_SESSION['profile_pic'] ?? 'uploads/default.jpeg' : 'uploads/default.jpeg';
-
 $members = [];
 $q = '';
 
 // Default query
-$sql = "SELECT name, pronouns, profile_pic FROM users ORDER BY name ASC";
+$sql = "SELECT id, name, pronouns, profile_pic FROM users ORDER BY name ASC";
 
 // Handle search query
 if (isset($_GET['q'])) {
     $q = trim($_GET['q']);
     $q = mysqli_real_escape_string($conn, $q);
 
-    $sql = "SELECT name, pronouns, profile_pic FROM users 
+    $sql = "SELECT id, name, pronouns, profile_pic FROM users 
             WHERE name LIKE '%$q%' 
                OR pronouns LIKE '%$q%' 
                OR email LIKE '%$q%' 
@@ -38,15 +30,15 @@ if ($result && $result->num_rows > 0) {
         $members[] = $row;
     }
 }
-
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
   <title>WOMXN Community</title>
-  <link rel="stylesheet" href="styles.css"> <!-- Optional external CSS -->
+  <link rel="stylesheet" href="styles.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700;800&display=swap" rel="stylesheet" />
+     
   <style>
     * {
   margin: 0;
@@ -130,35 +122,37 @@ if ($result && $result->num_rows > 0) {
 <div class="container">
 
   <!-- Sidebar -->
-   <?php include 'sidebar.php'; ?>    
-      
+  <?php include 'sidebar.php'; ?>    
+
   <!-- Main content -->
-<div class="community-container">
-    <form method="GET" action="" class="search-bar">
-        <input type="text" name="q" placeholder="Search..." value="<?= htmlspecialchars($q) ?>" required>
-        <button type="submit">Search</button>
-    </form>
+  <div class="community-container">
+      <form method="GET" action="" class="search-bar">
+          <input type="text" name="q" placeholder="Search..." value="<?= htmlspecialchars($q) ?>" required>
+          <button type="submit">Search</button>
+      </form>
 
-    <?php if ($q): ?>
-        <h2>Search results for: <?= htmlspecialchars($q) ?></h2>
-    <?php else: ?>
-        <h2>WOMXN Community</h2>
-    <?php endif; ?>
+      <?php if ($q): ?>
+          <h2>Search results for: <?= htmlspecialchars($q) ?></h2>
+      <?php else: ?>
+          <h2>WOMXN Community</h2>
+      <?php endif; ?>
 
-    <?php if (!empty($members)): ?>
-        <?php foreach ($members as $row): ?>
-            <div class="member-card">
-                <img src="<?= htmlspecialchars($row['profile_pic'] ?: 'uploads/default.jpeg') ?>" alt="Profile">
-                <div class="member-info">
-                    <p><strong><?= htmlspecialchars($row['name']) ?></strong></p>
-                    <p class="pronouns"><?= htmlspecialchars($row['pronouns']) ?></p>
-                </div>
-            </div>
-        <?php endforeach; ?>
-    <?php else: ?>
-        <p>No <?= $q ? 'results' : 'members' ?> found.</p>
-    <?php endif; ?>
-</div>
+      <?php if (!empty($members)): ?>
+          <?php foreach ($members as $row): ?>
+              <a href="user_profile.php?id=<?= urlencode($row['id']) ?>" style="text-decoration:none; color:inherit;">
+                  <div class="member-card">
+                      <img src="<?= htmlspecialchars($row['profile_pic'] ?: 'uploads/default.jpeg') ?>" alt="Profile">
+                      <div class="member-info">
+                          <p><strong><?= htmlspecialchars($row['name']) ?></strong></p>
+                          <p class="pronouns"><?= htmlspecialchars($row['pronouns']) ?></p>
+                      </div>
+                  </div>
+              </a>
+          <?php endforeach; ?>
+      <?php else: ?>
+          <p>No <?= $q ? 'results' : 'members' ?> found.</p>
+      <?php endif; ?>
+  </div>
 
 </div>
 </body>

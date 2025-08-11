@@ -85,14 +85,15 @@ if (isset($_GET['q'])) {
     }
    
     main {
-      margin-left: 240px;
+      margin-left: 340px;
       padding: 2rem;
       flex: 1;
     }
     .search-bar {
   display: flex;
   justify-content: center;
-  margin: 20px 0;
+  margin-bottom: 20px;
+
 }
 
 .search-bar input {
@@ -119,12 +120,14 @@ if (isset($_GET['q'])) {
     .post-form, .post {
       background: white;
       border-radius: 10px;
+      max-width: 600px;
       padding: 15px;
       margin-bottom: 20px;
       box-shadow: 0 0 10px rgba(0,0,0,0.05);
     }
     .post img {
-      max-width: 80%;
+       width: 60%;
+      height: 60%;
       border-radius: 8px;
       margin-top: 10px;
     }
@@ -180,8 +183,50 @@ if (isset($_GET['q'])) {
           <?php if (!empty($post['image'])): ?>
             <img src="<?= htmlspecialchars($post['image']) ?>" alt="Post Image">
           <?php endif; ?>
+          <?php
+// Fetch comments for this post
+$post_id = $post['id'];
+$stmt = $conn->prepare("SELECT comments.comment_text, comments.created_at, users.name 
+                        FROM comments 
+                        JOIN users ON comments.user_id = users.id 
+                        WHERE comments.post_id = ? 
+                        ORDER BY comments.created_at ASC");
+$stmt->bind_param("i", $post_id);
+$stmt->execute();
+$comments_result = $stmt->get_result();
+?>
+
+<div class="comments-section" style="margin-top: 15px; padding-left: 20px; border-left: 2px solid #ccc;">
+  <h4>Comments:</h4>
+  <?php if ($comments_result->num_rows > 0): ?>
+    <?php while ($comment = $comments_result->fetch_assoc()): ?>
+      <div class="comment" style="margin-bottom: 10px;">
+        <strong><?= htmlspecialchars($comment['name']) ?></strong>
+        <span style="color: gray; font-size: 12px;">(<?= htmlspecialchars($comment['created_at']) ?>)</span>
+        <p><?= nl2br(htmlspecialchars($comment['comment_text'])) ?></p>
+      </div>
+    <?php endwhile; ?>
+  <?php else: ?>
+    <p>No comments yet. Be the first to comment!</p>
+  <?php endif; ?>
+
+  <?php if ($isLoggedIn): ?>
+    <form action="submit_comment.php" method="POST" style="margin-top: 10px;">
+      <input type="hidden" name="post_id" value="<?= $post_id ?>">
+      <textarea name="comment_text" placeholder="Write your comment..." required style="width: 100%; height: 60px;"></textarea><br>
+      <button type="submit" style="background:#872657; color:#fff; padding:5px 10px; border:none; border-radius:5px; cursor:pointer;">Post Comment</button>
+    </form>
+  <?php else: ?>
+    <p><em>Log in to leave a comment.</em></p>
+  <?php endif; ?>
+</div>
+
+<?php $stmt->close(); ?>
+
         </div>
       <?php endforeach; ?>
+
+      
     </main>
   </div>
 </body>

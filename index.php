@@ -263,17 +263,17 @@ footer {
 
     <!-- Main Content -->
     <main>
-  <form method="GET" action="" class="search-bar">
-  <input type="text" name="q" placeholder="Search..." value="<?= isset($_GET['q']) ? htmlspecialchars($_GET['q']) : '' ?>">
-  <button type="submit">Search</button>
-    </form>
 
-
-      <section id="hero" class="section hero">
+     <section id="hero" class="section hero">
         <h2 class="hero-title">Welcome to WOMXN 🌈</h2>
         <p>A safe space for queer women in Kenya to connect, share, and thrive.</p>
         <a href="#join" class="btn">Join the Movement</a>
       </section>
+
+  <form method="GET" action="" class="search-bar">
+  <input type="text" name="q" placeholder="Search..." value="<?= isset($_GET['q']) ? htmlspecialchars($_GET['q']) : '' ?>">
+  <button type="submit">Search</button>
+    </form>
 
       <hr />
 
@@ -317,6 +317,7 @@ footer {
       <?php endforeach; ?>
     <?php endif; ?>
   <?php endif; ?>
+  <a href="feed.php" class="btn">See Posts</a>
 </section>
 
 
@@ -344,6 +345,7 @@ footer {
   <?php else: ?>
     <p>No events yet. Stay tuned!</p>
   <?php endif; ?>
+  <a href="events.php" class="btn">See Events</a>
 </section>
 
 
