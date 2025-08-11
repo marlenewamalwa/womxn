@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     .signup-image {
       flex: 1;
-      background: url('uploads/hearts.jpeg') no-repeat center center;
+      background: url('uploads/gradient.jpeg') no-repeat center center;
       background-size: cover;
       min-height: 100vh;
     }

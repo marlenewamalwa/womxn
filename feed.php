@@ -31,16 +31,51 @@ if ($result && $result->num_rows > 0) {
         $posts[] = $row;
     }
 }
+
+
+if (isset($_GET['q'])) {
+    $q = trim($_GET['q']);
+    $q = mysqli_real_escape_string($conn, $q);
+
+    // Example: search in posts table
+    $sql = "SELECT * FROM posts 
+            WHERE content LIKE '%$q%' 
+          
+            ORDER BY created_at DESC";
+
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        echo "<h2>Search results for: " . htmlspecialchars($q) . "</h2>";
+        while ($row = $result->fetch_assoc()) {
+            echo "<div>";
+            echo "<h3>" . htmlspecialchars($row['content']) . "</h3>";
+            
+            echo "</div>";
+        }
+    } else {
+        echo "<p>No results found for <strong>" . htmlspecialchars($q) . "</strong>.</p>";
+    }
+}
+
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Feed</title>
+  <title>WOMXN | Feed</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700;800&display=swap" rel="stylesheet" />
   <style>
+    * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
     body {
       font-family: 'Poppins', sans-serif;
       display: flex;
-      background-color: #fffafc;
+      background-color: #ffe6f0;
       color: #2b2b2b;
       margin: 0;
     }
@@ -48,77 +83,39 @@ if ($result && $result->num_rows > 0) {
       display: flex;
       width: 100%;
     }
-    .sidebar {
-      width: 220px;
-      background-color: #3a0b2d;
-      color: white;
-      padding: 2rem 1rem;
-      height: 100vh;
-      position: fixed;
-    }
-    .sidebar h1 {
-      font-size: 1.8rem;
-      margin-bottom: 2rem;
-    }
-    .sidebar ul {
-      list-style: none;
-      padding: 0;
-    }
-    .sidebar ul li {
-      margin: 1rem 0;
-    }
-    .sidebar ul li a {
-      color: white;
-      text-decoration: none;
-      font-weight: 500;
-      display: block;
-      padding: 0.5rem;
-      border-radius: 5px;
-      transition: background 0.3s ease;
-    }
-    .sidebar ul li a:hover {
-      background-color: #872657;
-    }
-    .gradient-text {
-      font-size: 3rem;
-      font-weight: bold;
-      background: linear-gradient(90deg, #d52d00, #ff9a56, #ffffff, #d362a4, #a30262);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .user-info {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-bottom: 2rem;
-    }
-    .nav-profile-pic {
-      width: 60px;
-      height: 60px;
-      object-fit: cover;
-      border-radius: 50%;
-      margin-bottom: 0.5rem;
-    }
-    .username-link {
-      color: white;
-      text-decoration: none;
-      margin-bottom: 0.3rem;
-    }
-    .username-link p {
-      margin: 0;
-      font-weight: bold;
-    }
-    .logout-link,
-    .login-link {
-      color: white;
-      font-size: 0.9rem;
-      text-decoration: underline;
-    }
+   
     main {
       margin-left: 240px;
       padding: 2rem;
       flex: 1;
     }
+    .search-bar {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.search-bar input {
+  padding: 8px;
+  width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 5px 0 0 5px;
+  outline: none;
+}
+
+.search-bar button {
+  padding: 8px 15px;
+  background: #872657;
+  color: white;
+  border: none;
+  border-radius: 0 5px 5px 0;
+  cursor: pointer;
+}
+
+.search-bar button:hover {
+  background: #68212fff;
+}
+
     .post-form, .post {
       background: white;
       border-radius: 10px;
@@ -152,28 +149,16 @@ if ($result && $result->num_rows > 0) {
 <body>
   <div class="container">
     <!-- Sidebar -->
-    <nav class="sidebar">
-      <h1 class="gradient-text">WOMXN</h1>
-      <div class="user-info">
-        <img src="<?= htmlspecialchars($pic) ?>" alt="Profile" class="nav-profile-pic">
-        <?php if ($isLoggedIn): ?>
-          <a href="profile.php" class="username-link">
-            <p><?= htmlspecialchars($_SESSION['user_name']) ?></p>
-          </a>
-          <a href="logout.php" class="logout-link">Logout</a>
-        <?php else: ?>
-          <a href="login.php" class="login-link">Login</a>
-        <?php endif; ?>
-      </div>
-      <ul>
-        <li><a href="index.php">Home</a></li>
-        <li><a href="community.php">Community</a></li>
-        <li><a href="events.php">Events</a></li>
-      </ul>
-    </nav>
+   <?php include 'sidebar.php'; ?>
 
     <!-- Main Content -->
     <main>
+<form method="GET" action="" class="search-bar">
+  <input type="text" name="q" placeholder="Search..." required>
+  <button type="submit">Search</button>
+</form>
+
+
       <?php if ($isLoggedIn): ?>
         <div class="post-form">
           <form action="create_post.php" method="POST" enctype="multipart/form-data">

@@ -9,6 +9,36 @@ $pic = $isLoggedIn ? $_SESSION['profile_pic'] ?? 'uploads/default.jpeg' : 'uploa
 // Fetch all users
 $sql = "SELECT name, pronouns, profile_pic FROM users ORDER BY name ASC";
 $result = $conn->query($sql);
+
+// Handle search query
+$isLoggedIn = isset($_SESSION['user_id']);
+$pic = $isLoggedIn ? $_SESSION['profile_pic'] ?? 'uploads/default.jpeg' : 'uploads/default.jpeg';
+
+$members = [];
+$q = '';
+
+// Default query
+$sql = "SELECT name, pronouns, profile_pic FROM users ORDER BY name ASC";
+
+// Handle search query
+if (isset($_GET['q'])) {
+    $q = trim($_GET['q']);
+    $q = mysqli_real_escape_string($conn, $q);
+
+    $sql = "SELECT name, pronouns, profile_pic FROM users 
+            WHERE name LIKE '%$q%' 
+               OR pronouns LIKE '%$q%' 
+               OR email LIKE '%$q%' 
+            ORDER BY created_at DESC";
+}
+
+$result = $conn->query($sql);
+if ($result && $result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $members[] = $row;
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -16,7 +46,13 @@ $result = $conn->query($sql);
 <head>
   <title>WOMXN Community</title>
   <link rel="stylesheet" href="styles.css"> <!-- Optional external CSS -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700;800&display=swap" rel="stylesheet" />
   <style>
+    * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
     body {
       font-family: 'Poppins', sans-serif;
       display: flex;
@@ -29,92 +65,38 @@ $result = $conn->query($sql);
       width: 100%;
     }
 
-    .sidebar {
-      width: 220px;
-      background-color: #3a0b2d;
-      color: white;
-      padding: 2rem 1rem;
-      height: 100vh;
-      position: fixed;
-    }
-
-    .sidebar h1 {
-      font-size: 1.8rem;
-      margin-bottom: 2rem;
-      letter-spacing: -1px;
-    }
-
-    .sidebar ul {
-      list-style: none;
-      padding: 0;
-    }
-
-    .sidebar ul li {
-      margin: 1rem 0;
-    }
-
-    .sidebar ul li a {
-      color: white;
-      text-decoration: none;
-      font-weight: 500;
-      display: block;
-      padding: 0.5rem;
-      border-radius: 5px;
-      transition: background 0.3s ease;
-    }
-
-    .sidebar ul li a:hover {
-      background-color: #872657;
-    }
-
-    .gradient-text {
-      font-size: 3rem;
-      font-weight: bold;
-      background: linear-gradient(90deg, #d52d00, #ff9a56, #ffffff, #d362a4, #a30262);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .user-info {
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-
-    .nav-profile-pic {
-      width: 60px;
-      height: 60px;
-      object-fit: cover;
-      border-radius: 50%;
-      margin-bottom: 0.5rem;
-    }
-
-    .username-link {
-      color: white;
-      text-decoration: none;
-      margin-bottom: 0.3rem;
-    }
-
-    .username-link p {
-      margin: 0;
-      font-weight: bold;
-      text-align: center;
-    }
-
-    .logout-link,
-    .login-link {
-      color: white;
-      font-size: 0.9rem;
-      text-decoration: underline;
-    }
-
     .community-container {
       margin-left: 240px;
       padding: 2rem;
       flex: 1;
     }
+    .search-bar {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.search-bar input {
+  padding: 8px;
+  width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 5px 0 0 5px;
+  outline: none;
+}
+
+.search-bar button {
+  padding: 8px 15px;
+  background: #872657;
+  color: white;
+  border: none;
+  border-radius: 0 5px 5px 0;
+  cursor: pointer;
+}
+
+.search-bar button:hover {
+  background: #68212fff;
+}
+
 
     .member-card {
       display: flex;
@@ -146,44 +128,38 @@ $result = $conn->query($sql);
 </head>
 <body>
 <div class="container">
-  <!-- Sidebar -->
-  <nav class="sidebar">
-    <h1 class="gradient-text">WOMXN</h1>
-    <div class="user-info">
-      <img src="<?= htmlspecialchars($pic) ?>" alt="Profile" class="nav-profile-pic">
-      <?php if ($isLoggedIn): ?>
-        <a href="profile.php" class="username-link">
-          <p><?= htmlspecialchars($_SESSION['user_name']) ?></p>
-        </a>
-        <a href="logout.php" class="logout-link">Logout</a>
-      <?php else: ?>
-        <a href="login.php" class="login-link">Login</a>
-      <?php endif; ?>
-    </div>
-    <ul>
-      <li><a href="index.php">Home</a></li>
-      <li><a href="community.php">Community</a></li>
-      <li><a href="events.php">Events</a></li>
-    </ul>
-  </nav>
 
+  <!-- Sidebar -->
+   <?php include 'sidebar.php'; ?>    
+      
   <!-- Main content -->
-  <div class="community-container">
-    <h2>WOMXN Community</h2>
-    <?php if ($result->num_rows > 0): ?>
-      <?php while($row = $result->fetch_assoc()): ?>
-        <div class="member-card">
-          <img src="<?= htmlspecialchars($row['profile_pic'] ?: 'uploads/default.jpeg') ?>" alt="Profile">
-          <div class="member-info">
-            <p><strong><?= htmlspecialchars($row['name']) ?></strong></p>
-            <p class="pronouns"><?= htmlspecialchars($row['pronouns']) ?></p>
-          </div>
-        </div>
-      <?php endwhile; ?>
+<div class="community-container">
+    <form method="GET" action="" class="search-bar">
+        <input type="text" name="q" placeholder="Search..." value="<?= htmlspecialchars($q) ?>" required>
+        <button type="submit">Search</button>
+    </form>
+
+    <?php if ($q): ?>
+        <h2>Search results for: <?= htmlspecialchars($q) ?></h2>
     <?php else: ?>
-      <p>No members yet.</p>
+        <h2>WOMXN Community</h2>
     <?php endif; ?>
-  </div>
+
+    <?php if (!empty($members)): ?>
+        <?php foreach ($members as $row): ?>
+            <div class="member-card">
+                <img src="<?= htmlspecialchars($row['profile_pic'] ?: 'uploads/default.jpeg') ?>" alt="Profile">
+                <div class="member-info">
+                    <p><strong><?= htmlspecialchars($row['name']) ?></strong></p>
+                    <p class="pronouns"><?= htmlspecialchars($row['pronouns']) ?></p>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <p>No <?= $q ? 'results' : 'members' ?> found.</p>
+    <?php endif; ?>
+</div>
+
 </div>
 </body>
 </html>

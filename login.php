@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     body {
       font-family: Arial, sans-serif;
       padding: 2rem;
-      background: #f4f4f4;
+      background: #ffe6f0;
     }
     .login-box {
       background: white;
@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     button {
       width: 100%;
       padding: 10px;
-      background: black;
+      background: #68212fff;
       color: white;
       border: none;
       border-radius: 5px;
