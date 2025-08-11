@@ -147,19 +147,7 @@ ul.mission-list li {
   transform: translateY(-2px);
 }
 
-/* Hero */
-.hero {
-  background-color: #ffe6f0;
-  padding: 3rem 2rem;
-  border-radius: 12px;
-}
-
-.hero-title {
-  font-size: 2.5rem;
-  font-weight: 800;
-  color: #3a0b2d;
-  margin-bottom: 1rem;
-}
+/* Latest posts */
 .latest-posts {
   max-width: 500px;
   margin: 40px auto;
@@ -196,7 +184,8 @@ ul.mission-list li {
 }
 
 .post-image {
-  max-width: 100%;
+ height: auto;
+  max-width: 90%;
   margin-top: 10px;
   border-radius: 8px;
 }
@@ -253,8 +242,7 @@ footer {
   color: #555;
   padding: 2rem 0 0;
 }
-
-  </style>
+</style>
 </head>
 <body>
   <div class="container">
@@ -264,18 +252,39 @@ footer {
     <!-- Main Content -->
     <main>
 
-     <section id="hero" class="section hero">
-        <h2 class="hero-title">Welcome to WOMXN 🌈</h2>
-        <p>A safe space for queer women in Kenya to connect, share, and thrive.</p>
-        <a href="#join" class="btn">Join the Movement</a>
-      </section>
+   
 
   <form method="GET" action="" class="search-bar">
   <input type="text" name="q" placeholder="Search..." value="<?= isset($_GET['q']) ? htmlspecialchars($_GET['q']) : '' ?>">
   <button type="submit">Search</button>
     </form>
+  <hr />
 
-      <hr />
+  <section class="latest-events">
+  <h2>Upcoming Events</h2>
+
+  <?php if ($eventResult && $eventResult->num_rows > 0): ?>
+    <div class="event-list">
+      <?php while($event = $eventResult->fetch_assoc()): ?>
+        <div class="event-card">
+          <img src="post_uploads/<?= htmlspecialchars($event['image']) ?>" alt="Event Image">
+          <div class="event-details">
+            <h3><?= htmlspecialchars($event['title']) ?></h3>
+            <p><?= htmlspecialchars($event['description']) ?></p>
+            <p><strong>Date:</strong> <?= htmlspecialchars($event['event_date']) ?></p>
+            <?php if (!empty($event['ticket_link'])): ?>
+              <p><a href="<?= htmlspecialchars($event['ticket_link']) ?>" target="_blank">Get Tickets</a></p>
+            <?php endif; ?>
+          </div>
+        </div>
+      <?php endwhile; ?>
+    </div>
+  <?php else: ?>
+    <p>No events yet. Stay tuned!</p>
+  <?php endif; ?>
+  <a href="events.php" class="btn">See Events</a>
+</section>
+
 
 <section class="latest-posts">
   <?php if ($searching): ?>
@@ -319,45 +328,15 @@ footer {
   <?php endif; ?>
   <a href="feed.php" class="btn">See Posts</a>
 </section>
+   <hr />
 
 
-      <hr />
+<hr />
 
-<section class="latest-events">
-  <h2>Upcoming Events</h2>
-
-  <?php if ($eventResult && $eventResult->num_rows > 0): ?>
-    <div class="event-list">
-      <?php while($event = $eventResult->fetch_assoc()): ?>
-        <div class="event-card">
-          <img src="post_uploads/<?= htmlspecialchars($event['image']) ?>" alt="Event Image">
-          <div class="event-details">
-            <h3><?= htmlspecialchars($event['title']) ?></h3>
-            <p><?= htmlspecialchars($event['description']) ?></p>
-            <p><strong>Date:</strong> <?= htmlspecialchars($event['event_date']) ?></p>
-            <?php if (!empty($event['ticket_link'])): ?>
-              <p><a href="<?= htmlspecialchars($event['ticket_link']) ?>" target="_blank">Get Tickets</a></p>
-            <?php endif; ?>
-          </div>
-        </div>
-      <?php endwhile; ?>
-    </div>
-  <?php else: ?>
-    <p>No events yet. Stay tuned!</p>
-  <?php endif; ?>
-  <a href="events.php" class="btn">See Events</a>
-</section>
-
-
-
-
-
-      <hr />
-
-      <section id="join" class="section cta">
+<section id="join" class="section cta">
         <h2>Be Part of the Movement 💕</h2>
         <p>We’re building something powerful together. Sign up to stay updated on upcoming events, new content, and how to get involved.</p>
-        <a href="#" class="btn">Sign Up</a>
+        <a href="signup.php" class="btn">Sign Up</a>
       </section>
 
       <footer>

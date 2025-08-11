@@ -8,11 +8,16 @@
   position: fixed;
 }
 
-.sidebar h1 {
-  font-size: 1.8rem;
-  margin-bottom: 2rem;
-  letter-spacing: -1px;
+.gradient-text {
+  font-weight: bold;
+  font-size: 45px;
+  background:  linear-gradient(180deg, #D62E00 0%, #FF9A56 25%, #FFFFFF 50%, #D362A4 75%, #9A0036 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;  /* Text shows only gradient */
+  -webkit-text-fill-color: transparent; /* Needed for Safari */
 }
+
 
 .sidebar ul {
   list-style: none;

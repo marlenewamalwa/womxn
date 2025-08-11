@@ -8,7 +8,7 @@ $pic = $isLoggedIn && !empty($_SESSION['profile_pic']) ? $_SESSION['profile_pic'
 ?>
 
 <nav class="sidebar">
-  <h1 >WOMXN</h1>
+  <h1 class="gradient-text">WOMXN</h1>
 
   <div class="user-info">
     <img src="<?= htmlspecialchars($pic) ?>" alt="Profile" class="nav-profile-pic">

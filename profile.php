@@ -132,6 +132,54 @@ body {
   <?php if (empty($posts)): ?>
     <p style="text-align:center;">You have not made any posts yet.</p>
   <?php endif; ?>
+
+  <?php
+// Fetch distinct chat partners (users who sent or received messages with logged in user)
+$chat_partners = [];
+$query = "
+    SELECT DISTINCT u.id, u.name, u.profile_pic
+    FROM users u
+    INNER JOIN (
+        SELECT sender_id AS user_id FROM messages WHERE receiver_id = ?
+        UNION
+        SELECT receiver_id AS user_id FROM messages WHERE sender_id = ?
+    ) m ON u.id = m.user_id
+    WHERE u.id != ?
+";
+$stmt = $conn->prepare($query);
+$stmt->bind_param("iii", $user_id, $user_id, $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+while ($row = $result->fetch_assoc()) {
+    $chat_partners[] = $row;
+}
+$stmt->close();
+?>
+
+<h3 style="text-align:center; margin-top: 2rem;">Your Messages</h3>
+
+<?php if (empty($chat_partners)): ?>
+    <p style="text-align:center;">You have no messages yet.</p>
+<?php else: ?>
+    <div style="max-width: 500px; margin: 0 auto;">
+        <?php foreach ($chat_partners as $partner): ?>
+            <div style="display:flex; align-items:center; justify-content: space-between; background: white; padding: 10px; border-radius: 8px; margin-bottom: 10px; box-shadow: 0 0 5px rgba(0,0,0,0.05);">
+                <div style="display:flex; align-items:center; gap: 10px;">
+     <?php 
+$pic = (!empty($partner['profile_pic']) && file_exists("uploads/" . $partner['profile_pic'])) 
+    ? "uploads/" . $partner['profile_pic'] 
+    : "uploads/default.jpeg"; 
+?>
+<img src="<?= htmlspecialchars($pic) ?>" alt="Profile Pic" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+
+                    <span><?= htmlspecialchars($partner['name']) ?></span>
+                </div>
+                <a href="chat.php?user=<?= $partner['id'] ?>" class="edit-btn" style="padding: 6px 12px; font-size: 0.9rem;">Message</a>
+            </div>
+        <?php endforeach; ?>
+    </div>
+<?php endif; ?>
+
   </main>
 </body>
 </html>
