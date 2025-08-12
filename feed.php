@@ -161,7 +161,6 @@ if (isset($_GET['q'])) {
   <button type="submit">Search</button>
 </form>
 
-
       <?php if ($isLoggedIn): ?>
         <div class="post-form">
           <form action="create_post.php" method="POST" enctype="multipart/form-data">

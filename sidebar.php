@@ -27,5 +27,6 @@ $pic = $isLoggedIn && !empty($_SESSION['profile_pic']) ? $_SESSION['profile_pic'
     <li><a href="feed.php">Feed</a></li>
     <li><a href="community.php">Community</a></li>
     <li><a href="events.php">Events</a></li>
+    <li><a href="exchange.php">Opportunities</a></li>
   </ul>
 </nav>

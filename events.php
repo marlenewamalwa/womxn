@@ -89,7 +89,16 @@ main {
 .event-search button:hover {
     background: #68212fff;
 }
-
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background: #872657;            
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    transition: background 0.3s ease;
+}
         .events-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -150,7 +159,7 @@ main {
     <input type="text" name="search" placeholder="Search events..." value="<?= htmlspecialchars($searchTerm) ?>">
     <button type="submit">Search</button>
 </form>
-
+  <a href="create_event.php" class="btn">Add an Event</a>
 <div class="events-container">
 <?php
 $sql = "SELECT * FROM events ORDER BY event_date ASC";

@@ -24,6 +24,8 @@ $stmt->close();
 if (!$member) {
     die('Member not found');
 }
+// Prevent undefined variable notice
+$exchanges = [];
 
 // Fetch all users except logged-in for optional "Message" list
 $stmt = $conn->prepare("SELECT id, name FROM users WHERE id != ?");
@@ -32,6 +34,33 @@ $stmt->execute();
 $result = $stmt->get_result();
 $users = $result->fetch_all(MYSQLI_ASSOC);
 $stmt->close();
+
+// Fetch user's events
+$stmt = $conn->prepare("SELECT id, title, event_date FROM events WHERE id = ? ORDER BY event_date DESC");
+$stmt->bind_param("i", $id);            
+
+// Fetch user's posts
+$stmt = $conn->prepare("SELECT id, created_at FROM posts WHERE user_id = ? ORDER BY created_at DESC");
+$stmt->bind_param("i", $id);
+$stmt->execute();
+$posts = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+$stmt->close();
+
+// Fetch user's exchanges
+$sql = "SELECT id, title, type, location, created_at 
+        FROM exchange_listings 
+        WHERE user_id = ? 
+        ORDER BY created_at DESC";
+
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $id); // $id is the profile owner’s user_id
+$stmt->execute();
+$result = $stmt->get_result();
+if ($result) {
+    $exchanges = $result->fetch_all(MYSQLI_ASSOC);
+}
+$stmt->close();
+
 ?>
 
 <!DOCTYPE html>
@@ -131,6 +160,36 @@ $stmt->close();
 .btn:hover {
     background-color: #68212f;
 }
+.user-content {
+    margin-top: 20px;
+}
+
+.user-section {
+    background: #fff0f5;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+}
+
+.user-section h2 {
+    color: #872657;
+    margin-bottom: 10px;
+}
+
+.user-section ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.user-section li {
+    padding: 5px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.user-section li:last-child {
+    border-bottom: none;
+}
+
 
     </style>
 </head>
@@ -151,7 +210,64 @@ $stmt->close();
 
                 </div>
             </div>
-               
+               <div class="user-content">
+    <!-- Events -->
+ <section class="user-section">
+    <h2>Events</h2>
+    <?php if (!empty($events)): ?>
+        <ul>
+            <?php foreach ($events as $event): ?>
+                <li>
+                    <a href="event.php?id=<?= (int)$event['id'] ?>">
+                        <?= htmlspecialchars($event['title']) ?>
+                    </a>
+                    - <?= htmlspecialchars($event['event_date']) ?>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    <?php else: ?>
+        <p>No events posted yet.</p>
+    <?php endif; ?>
+</section>
+
+
+    <!-- Posts -->
+    <section class="user-section">
+        <h2>Posts</h2>
+        <?php if ($posts): ?>
+            <ul>
+                <?php foreach ($posts as $post): ?>
+                    <li>
+                        <a href="post.php?id=<?= $post['id'] ?>">
+                           
+                        </a> - <?= htmlspecialchars($post['created_at']) ?>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        <?php else: ?>
+            <p>No posts yet.</p>
+        <?php endif; ?>
+    </section>
+
+    <!-- Exchanges -->
+    <section class="user-section">
+        <h2>Exchange Listings</h2>
+        <?php if ($exchanges): ?>
+            <ul>
+                <?php foreach ($exchanges as $exchange): ?>
+                    <li>
+                        <a href="exchange_item.php?id=<?= $exchange['id'] ?>">
+                            <?= htmlspecialchars($exchange['title']) ?>
+                        </a> (<?= htmlspecialchars($exchange['type']) ?>)
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        <?php else: ?>
+            <p>No exchange listings yet.</p>
+        <?php endif; ?>
+    </section>
+</div>
+
         </main>
     </div>
 </body>

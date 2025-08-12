@@ -164,6 +164,7 @@ main {
 
     <form method="post" action="chat.php?user=<?= $chatUser ?>">
         <textarea name="message" rows="2" placeholder="Type your message..." required></textarea>
+        <input type="file" name="image" accept="image/*">
         <button type="submit">Send</button>
     </form>
 

@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       margin: 0;
       padding: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: #f5f5f5;
+      background: #ffe6f0;
     }
 
     .main-container {
@@ -92,17 +92,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       justify-content: center;
     }
 
-    .signup-image {
-      flex: 1;
-      background: url('uploads/gradient.jpeg') no-repeat center center;
-      background-size: cover;
-      min-height: 100vh;
-    }
-
+ 
     .signup-container {
       flex: 1;
-      max-width: 500px;
+      max-width: 400px;
       margin: auto;
+      height: 70%;
       padding: 40px;
       background: #fff;
       border-radius: 0 12px 12px 0;
@@ -112,6 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .signup-container h2 {
       text-align: center;
       margin-bottom: 25px;
+    
       color: #222;
     }
 
@@ -169,7 +165,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
   <div class="main-container">
-    <div class="signup-image"></div>
+  
 
     <div class="signup-container">
       <h2>Sign Up</h2>
@@ -207,6 +203,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <input type="file" name="profile_pic" id="profile_pic" accept="image/*">
 
         <button type="submit">Sign Up</button>
+        <p>Already have an account? <a href="login.php">Log in here</a></p>
       </form>
     </div>
   </div>
