@@ -1,29 +1,12 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 session_start();
 require 'db.php';
 
 $isLoggedIn = isset($_SESSION['user_id']);
 $defaultPic = 'uploads/default.jpeg';
 $pic = $isLoggedIn && !empty($_SESSION['profile_pic']) ? $_SESSION['profile_pic'] : $defaultPic;
-
-$q = isset($_GET['q']) ? $conn->real_escape_string($_GET['q']) : '';
-$searchResults = [];
-$searching = false;
-
-if (!empty($q)) {
-    $searching = true;
-    $sql = "SELECT posts.*, users.name, users.profile_pic 
-            FROM posts 
-            JOIN users ON posts.user_id = users.id
-            WHERE posts.content LIKE '%$q%' 
-            ORDER BY posts.created_at DESC";
-    $result = $conn->query($sql);
-    if ($result && $result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            $searchResults[] = $row;
-        }
-    }
-}
 
 // Get latest posts
 $sql = "SELECT posts.*, users.name, users.profile_pic 
@@ -99,70 +82,7 @@ main {
   flex: 1;
 }
 
-/* Search bar */
-.search-bar {
-  display: flex;
-  justify-content: center;
-  margin: 20px 0;
-}
 
-.search-bar input {
-  padding: 12px;
-  width: 350px;
-  border: 1px solid #ccc;
-  border-radius: 25px 0 0 25px;
-  outline: none;
-  font-size: 1rem;
-}
-
-.search-bar button {
-  padding: 12px 20px;
-  background: #872657;
-  color: white;
-  border: none;
-  border-radius: 0 25px 25px 0;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.search-bar button:hover {
-  background: #68212fff;
-  transform: scale(1.05);
-}
-
-/* Quick stats */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 2rem;
-  margin: 3rem 0;
-}
-
-.stat-card {
-  background: white;
-  padding: 2rem;
-  border-radius: 15px;
-  text-align: center;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.stat-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-}
-
-.stat-number {
-  font-size: 2.5rem;
-  font-weight: 800;
-  color: #872657;
-  margin-bottom: 0.5rem;
-}
-
-.stat-label {
-  color: #666;
-  font-weight: 600;
-}
 
 /* Quick navigation */
 .quick-nav {
@@ -211,60 +131,8 @@ main {
   margin-bottom: 0.5rem;
 }
 
-/* Resources section */
-.resources {
-  background: white;
-  padding: 2.5rem;
-  border-radius: 15px;
-  margin: 3rem 0;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
 
-.resources h2 {
-  color: #872657;
-  text-align: center;
-  margin-bottom: 2rem;
-}
 
-.resource-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-}
-
-.resource-item {
-  padding: 1.5rem;
-  background: #fff0f7;
-  border-radius: 12px;
-  border-left: 4px solid #872657;
-}
-
-.resource-item h3 {
-  color: #872657;
-  margin-bottom: 1rem;
-}
-
-/* Featured content */
-.featured {
-  background: linear-gradient(45deg, #fff0f7, #ffe6f0);
-  padding: 2.5rem;
-  border-radius: 15px;
-  margin: 3rem 0;
-  text-align: center;
-}
-
-.featured h2 {
-  color: #872657;
-  margin-bottom: 1.5rem;
-}
-
-.featured-content {
-  background: white;
-  padding: 2rem;
-  border-radius: 12px;
-  margin: 1.5rem 0;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-}
 
 .section {
   margin-bottom: 4rem;
@@ -325,7 +193,7 @@ ul.mission-list li {
 
 /* Latest posts */
 .latest-posts {
-  max-width: 600px;
+  max-width: 100%;
   margin: 40px auto;
   background: #fff;
   padding: 25px;
@@ -377,9 +245,10 @@ ul.mission-list li {
 }
 
 .latest-events {
-  margin-left: 220px;
+  max-width: 100%;
   padding: 25px;
   background: white;
+  text-align: center;
   border-radius: 15px;
   box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
@@ -541,27 +410,15 @@ footer {
     <main>
    
 
-      <!-- Search Bar -->
-      <form method="GET" action="" class="search-bar">
-        <input type="text" name="q" placeholder="Search posts, events, people..." value="<?= isset($_GET['q']) ? htmlspecialchars($_GET['q']) : '' ?>">
-        <button type="submit">🔍</button>
-      </form>
-
-      <!-- Community Stats -->
-      <section class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-number"><?= number_format($userCount) ?></div>
-          <div class="stat-label">Community Members</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number"><?= number_format($postCount) ?></div>
-          <div class="stat-label">Stories Shared</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number"><?= number_format($eventCount) ?></div>
-          <div class="stat-label">Events Hosted</div>
-        </div>
+      
+ <!-- Call to Action -->
+      <section id="join" class="section cta">
+        <h2>Be Part of the Movement 💕</h2>
+        <p>We're building something powerful together. Join our community to connect, share, and grow with fellow WOMXN and queer individuals across Kenya and beyond.</p>
+        <a href="signup.php" class="btn">Join the Community</a>
+        <a href="about.php" class="btn btn-secondary">Learn More</a>
       </section>
+    
 
       <!-- Quick Navigation -->
       <section class="quick-nav">
@@ -579,20 +436,15 @@ footer {
           </a>
           <a href="#resources" class="nav-card">
             <div class="nav-icon">📚</div>
-            <h3>Resources</h3>
-            <p>Support, guides, and helpful information</p>
-          </a>
-          <a href="profile.php" class="nav-card">
-            <div class="nav-icon">👤</div>
-            <h3>Your Profile</h3>
-            <p>Customize your space and connect with others</p>
+            <h3>Opportunities</h3>
+            <p>Work with other queer folk</p>
           </a>
         </div>
       </section>
 
       <!-- Latest Events -->
       <section class="latest-events">
-        <h2>🎉 Upcoming Events</h2>
+        <h2>Upcoming Events</h2>
         <?php if ($eventResult && $eventResult->num_rows > 0): ?>
           <div class="event-list">
             <?php while($event = $eventResult->fetch_assoc()): ?>
@@ -615,82 +467,32 @@ footer {
         <a href="events.php" class="btn">View All Events</a>
       </section>
 
-      <!-- Resources Section -->
-      <section id="resources" class="resources">
-        <h2>🛡️ Community Resources</h2>
-        <div class="resource-list">
-          <div class="resource-item">
-            <h3>Mental Health Support</h3>
-            <p>Connect with LGBTQ+ friendly therapists and counselors who understand your journey.</p>
-          </div>
-          <div class="resource-item">
-            <h3>Legal Resources</h3>
-            <p>Know your rights and find legal support for discrimination or identity documentation.</p>
-          </div>
-          <div class="resource-item">
-            <h3>Health & Wellness</h3>
-            <p>Find inclusive healthcare providers and wellness resources tailored to our community.</p>
-          </div>
-          <div class="resource-item">
-            <h3>Career & Education</h3>
-            <p>Scholarship opportunities, job boards, and professional networking for LGBTQ+ individuals.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Featured Content -->
-      <section class="featured">
-        <h2>✨ Featured This Week</h2>
-        <div class="featured-content">
-          <h3>Pride Month in Kenya: Celebrating Our Journey</h3>
-          <p>Join us as we explore the evolution of LGBTQ+ rights in Kenya and celebrate the courage of our community leaders.</p>
-          <a href="featured.php" class="btn">Read More</a>
-        </div>
-      </section>
-
-      <!-- Latest Posts -->
+ <!-- Latest Posts -->
       <section class="latest-posts">
-        <?php if ($searching): ?>
-          <h2>🔍 Search results for "<?= htmlspecialchars($q) ?>"</h2>
-          <?php if (!empty($searchResults)): ?>
-            <?php foreach ($searchResults as $post): ?>
-              <div class="post">
+    <h2>💫 Latest Community Posts</h2>
+
+    <?php if (empty($latestPosts)): ?>
+        <p>No posts yet. Be the first to share your story! ✨</p>
+    <?php else: ?>
+        <?php foreach ($latestPosts as $post): ?>
+            <div class="post">
                 <div class="post-header">
-                  <img src="<?= htmlspecialchars($post['profile_pic']) ?>" alt="Profile" class="avatar">
-                  <strong><?= htmlspecialchars($post['name']) ?></strong>
+                    <img src="<?= htmlspecialchars($post['profile_pic']) ?>" alt="Profile" class="avatar">
+                    <strong><?= htmlspecialchars($post['name']) ?></strong>
                 </div>
                 <p><?= nl2br(htmlspecialchars($post['content'])) ?></p>
+
                 <?php if (!empty($post['image'])): ?>
-                  <img src="<?= htmlspecialchars($post['image']) ?>" class="post-image" alt="Post Image">
+                    <img src="<?= htmlspecialchars($post['image']) ?>" class="post-image" alt="Post Image">
                 <?php endif; ?>
+
                 <small><?= date("F j, Y, g:i a", strtotime($post['created_at'])) ?></small>
-              </div>
-            <?php endforeach; ?>
-          <?php else: ?>
-            <p>No results found. Try different keywords! 🤔</p>
-          <?php endif; ?>
-        <?php else: ?>
-          <h2>💫 Latest Community Posts</h2>
-          <?php if (empty($latestPosts)): ?>
-            <p>No posts yet. Be the first to share your story! ✨</p>
-          <?php else: ?>
-            <?php foreach ($latestPosts as $post): ?>
-              <div class="post">
-                <div class="post-header">
-                  <img src="<?= htmlspecialchars($post['profile_pic']) ?>" alt="Profile" class="avatar">
-                  <strong><?= htmlspecialchars($post['name']) ?></strong>
-                </div>
-                <p><?= nl2br(htmlspecialchars($post['content'])) ?></p>
-                <?php if (!empty($post['image'])): ?>
-                  <img src="<?= htmlspecialchars($post['image']) ?>" class="post-image" alt="Post Image">
-                <?php endif; ?>
-                <small><?= date("F j, Y, g:i a", strtotime($post['created_at'])) ?></small>
-              </div>
-            <?php endforeach; ?>
-          <?php endif; ?>
-        <?php endif; ?>
-        <a href="feed.php" class="btn">View Full Feed</a>
-      </section>
+            </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
+
+    <a href="feed.php" class="btn">View Full Feed</a>
+</section>
 
       <!-- Newsletter Signup -->
       <section class="newsletter">
@@ -702,15 +504,7 @@ footer {
         </form>
       </section>
 
-      <!-- Call to Action -->
-      <section id="join" class="section cta">
-        <h2>Be Part of the Movement 💕</h2>
-        <p>We're building something powerful together. Join our community to connect, share, and grow with fellow WOMXN and queer individuals across Kenya and beyond.</p>
-        <a href="signup.php" class="btn">Join the Community</a>
-        <a href="about.php" class="btn btn-secondary">Learn More</a>
-      </section>
-
-      <footer>
+           <footer>
         <p>Made with love in Kenya 🇰🇪🏳️‍🌈 | © 2025 WOMXN | 
         <a href="privacy.php" style="color: #872657;">Privacy Policy</a> | 
         <a href="terms.php" style="color: #872657;">Terms of Service</a></p>

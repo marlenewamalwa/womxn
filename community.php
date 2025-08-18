@@ -405,7 +405,7 @@ function timeAgo($datetime) {
             <div class="search-section">
                 <form method="GET" action="" class="search-bar">
                     <i class="fas fa-search search-icon"></i>
-                    <input type="text" name="q" placeholder="Search members by name, pronouns, or email..." value="<?= htmlspecialchars($q) ?>">
+                    <input type="text" name="q" placeholder="Search members ..." value="<?= htmlspecialchars($q) ?>">
                     <button type="submit">
                         <i class="fas fa-search"></i> Search
                     </button>

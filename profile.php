@@ -253,7 +253,8 @@ $stmt->close();
         }
 
         .post img {
-            max-width: 100%;
+            max-width: 80%;
+
             margin-top: 1rem;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
@@ -469,8 +470,11 @@ $stmt->close();
                             <?php foreach ($otherMembers as $m): ?>
                                 <div class="member-item">
                                     <span><?= htmlspecialchars($m['name']) ?></span>
-                                    <a href="message.php?to=<?= urlencode($m['id']) ?>" class="msg-link">Message</a>
-                                </div>
+                                    <a href="user_profile.php?id=<?= $m['id'] ?>" class="msg-link">
+                                        <i class="fas fa-user"></i>
+                                        View Profile
+                                    </a>
+                                  </div>
                             <?php endforeach; ?>
                         <?php else: ?>
                             <div class="empty-state">

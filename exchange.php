@@ -63,25 +63,37 @@ main {
   padding: 2rem;
   flex: 1;
 }
-        .listing { 
+        .listing-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 15px; /* space between cards */
+}
+.listing { 
             border: 1px solid #ddd; 
-            padding: 15px; 
+            background: #fff;
+             padding: 15px;
+             margin-top: 15px;  
             margin-bottom: 15px; 
             border-radius: 6px; }
 
         .listing h3 { 
-            margin: 0 0 5px; }
+            margin: 0 0 5px;
+        margin-top: 15px;  
+            margin-bottom: 15px;  }
 
         .listing small { 
             color: #666; }
 
         .btn { display: inline-block; 
-            padding: 8px 12px; 
-            background: #d63384; 
+            padding: 5px 5px; 
+            font-size: 14px;
+            background: #872657; 
             color: white; 
             text-decoration: none; 
+            margin-top: 15px;  
+            margin-bottom: 15px; 
             border-radius: 4px; }
-            
+
         .btn:hover { background: #b0276e; }
         .topbar { margin-bottom: 20px; }
         /* Filter & Search Form Styling */
@@ -142,15 +154,6 @@ form.filter-form button:hover {
 
     <!-- Main Content -->
     <main>
-   
-<div class="topbar">
-    <h2>Skill & Job Exchange</h2>
-    <?php if (isset($_SESSION['user_id'])): ?>
-        <a class="btn" href="post_exchange.php">Post New Listing</a>
-    <?php else: ?>
-        <a class="btn" href="login.php">Login to Post</a>
-    <?php endif; ?>
-</div>
 
 <form method="GET" class="filter-form">
     <input type="text" name="search" placeholder="Search title or description" 
@@ -164,9 +167,15 @@ form.filter-form button:hover {
 
     <input type="submit" value="Filter">
 </form>
+<div class="topbar">
+       <?php if (isset($_SESSION['user_id'])): ?>
+        <a class="btn" href="post_exchange.php">Post New Listing</a>
+    <?php else: ?>
+        <a class="btn" href="login.php">Login to Post</a>
+    <?php endif; ?>
+</div>
 
-
-
+<div class="listing-container">
 <?php if (mysqli_num_rows($result) > 0): ?>
     <?php while ($l = mysqli_fetch_assoc($result)): ?>
         <div class="listing">
@@ -178,7 +187,10 @@ $type_labels = [
 ?>
 <h3><?= isset($type_labels[$l['type']]) ? $type_labels[$l['type']] : htmlspecialchars($l['type']) ?></h3>
 
-            <p><?= nl2br(htmlspecialchars($l['description'])) ?></p>
+            
+              <?php if (!empty($l['description'])): ?>
+                <p><strong>Title:</strong> <?= htmlspecialchars($l['description']) ?></p>
+            <?php endif; ?>
             <?php if (!empty($l['category'])): ?>
                 <p><strong>Category:</strong> <?= htmlspecialchars($l['category']) ?></p>
             <?php endif; ?>
@@ -186,7 +198,7 @@ $type_labels = [
                 <p><strong>Location:</strong> <?= htmlspecialchars($l['location']) ?></p>
             <?php endif; ?>
             <?php if (!empty($l['payment'])): ?>
-                <p><strong>Payment / Terms:</strong> <?= htmlspecialchars($l['payment']) ?></p>
+                <p><strong>Payment:</strong> <?= htmlspecialchars($l['payment']) ?></p>
             <?php endif; ?>
             <p><strong>Posted by:</strong> <?= htmlspecialchars($l['name']) ?> on <?= date("M d, Y", strtotime($l['created_at'])) ?></p>
             <?php if (isset($_SESSION['user_id'])): ?>
@@ -201,7 +213,7 @@ $type_labels = [
 <?php endif; ?>
 
 <?php mysqli_close($conn); ?>
-
+</div>
 </main>
 </div>
 </body>

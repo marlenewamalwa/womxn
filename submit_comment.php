@@ -16,14 +16,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Basic validation
     if (!$post_id || empty($comment_text)) {
         $_SESSION['error'] = "Comment cannot be empty.";
-        header('Location: index.php'); // Redirect back (you can adjust)
+        header('Location: feed.php'); // Redirect back (you can adjust)
         exit;
     }
 
     // Optional: limit comment length
     if (strlen($comment_text) > 1000) {
         $_SESSION['error'] = "Comment too long.";
-        header('Location: index.php');
+        header('Location: feed.php');
         exit;
     }
 
@@ -33,15 +33,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($stmt->execute()) {
         $stmt->close();
-        header("Location: index.php"); // Back to feed (adjust if needed)
+        header("Location: feed.php"); // Back to feed (adjust if needed)
         exit;
     } else {
         $_SESSION['error'] = "Failed to post comment.";
-        header('Location: index.php');
+        header('Location: feed.php');
         exit;
     }
 } else {
-    header('Location: index.php');
+    header('Location: feed.php');
     exit;
 }
 ?>

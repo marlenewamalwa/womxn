@@ -32,7 +32,6 @@ if ($result && $result->num_rows > 0) {
     }
 }
 
-
 if (isset($_GET['q'])) {
     $q = trim($_GET['q']);
     $q = mysqli_real_escape_string($conn, $q);
@@ -60,173 +59,643 @@ if (isset($_GET['q'])) {
 
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>WOMXN | Feed</title>
-  <link rel="stylesheet" href="styles.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700;800&display=swap" rel="stylesheet" />
-  <style>
-    * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WOMXN | Feed</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #872657;
+            --primary-hover: #68212f;
+            --primary-light: #b8336a;
+            --secondary-color: #ffe6f0;
+            --accent-color: #ff6b9d;
+            --text-dark: #2b2b2b;
+            --text-muted: #6c757d;
+            --text-light: #8e8e93;
+            --bg-primary: #ffe6f0;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --border-color: #e1e5e9;
+            --border-light: #f0f2f5;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+            --border-radius: 12px;
+            --border-radius-lg: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-    body {
-      font-family: 'Poppins', sans-serif;
-      display: flex;
-      background-color: #ffe6f0;
-      color: #2b2b2b;
-      margin: 0;
-    }
-    .container {
-      display: flex;
-      width: 100%;
-    }
-   
-    main {
-      margin-left: 340px;
-      padding: 2rem;
-      flex: 1;
-    }
-    .search-bar {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-}
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, #f8e8f0 100%);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
 
-.search-bar input {
-  padding: 8px;
-  width: 300px;
-  border: 1px solid #ccc;
-  border-radius: 5px 0 0 5px;
-  outline: none;
-}
+        .container {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+        }
 
-.search-bar button {
-  padding: 8px 15px;
-  background: #872657;
-  color: white;
-  border: none;
-  border-radius: 0 5px 5px 0;
-  cursor: pointer;
-}
+        /* Main Content Area */
+        main {
+            margin-left: 340px;
+            padding: 2rem;
+            flex: 1;
+            max-width: 800px;
+            margin-right: auto;
+            animation: fadeInUp 0.6s ease-out;
+        }
 
-.search-bar button:hover {
-  background: #68212fff;
-}
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-    .post-form, .post {
-      background: white;
-      border-radius: 10px;
-      max-width: 600px;
-      padding: 15px;
-      margin-bottom: 20px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
-    }
-    .post img {
-       width: 60%;
-      height: 60%;
-      border-radius: 8px;
-      margin-top: 10px;
-    }
-    .post .meta {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-    .post .meta img {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-    }
-    textarea {
-      width: 100%;
-      padding: 10px;
-      font-size: 15px;
-    }
-  </style>
+        /* Search Section */
+        .search-section {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-light);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .search-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color), var(--primary-light));
+        }
+
+        .search-bar {
+            display: flex;
+            justify-content: center;
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+            gap: 12px;
+        }
+
+        .search-input-container {
+            flex: 1;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 16px 20px 16px 55px;
+            border: 2px solid var(--border-color);
+            border-radius: 30px;
+            outline: none;
+            font-size: 1rem;
+            font-weight: 400;
+            transition: var(--transition);
+            background: var(--bg-secondary);
+            color: var(--text-dark);
+        }
+
+        .search-bar input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(135, 38, 87, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .search-bar input::placeholder {
+            color: var(--text-light);
+            font-weight: 400;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            z-index: 1;
+        }
+
+        .search-bar button {
+            padding: 16px 32px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: var(--transition);
+            white-space: nowrap;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .search-bar button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .search-bar button:hover::before {
+            left: 100%;
+        }
+
+        .search-bar button:hover {
+            background: linear-gradient(135deg, var(--primary-hover) 0%, #9a2a5a 100%);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .search-bar button:active {
+            transform: translateY(0);
+        }
+
+        /* Post Form */
+        .post-form {
+            background: var(--bg-card);
+            border-radius: var(--border-radius-lg);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-light);
+            transition: var(--transition);
+            height: auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .post-form:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .post-form textarea {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            outline: none;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 120px;
+            transition: var(--transition);
+            background: #fafbfc;
+        }
+
+        .post-form textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(135, 38, 87, 0.1);
+            background: white;
+        }
+
+        .post-form textarea::placeholder {
+            color: var(--text-light);
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            gap: 1rem;
+        }
+
+        .file-input-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .post-form input[type="file"] {
+            display: none;
+        }
+
+        .file-label {
+            display: inline-flex;
+            align-items: center;
+            max-width: 200px;
+            gap: 8px;
+            padding: 10px 16px;
+            background: var(--border-light);
+            color: var(--text-muted);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .file-label:hover {
+            background: var(--border-color);
+            color: var(--text-dark);
+        }
+
+        .post-form button[type="submit"] {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .post-form button[type="submit"]:hover {
+            background: linear-gradient(135deg, var(--primary-hover) 0%, #9a2a5a 100%);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Posts */
+        .post {
+            background: var(--bg-card);
+            border-radius: var(--border-radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-light);
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .post:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .post .meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .post .meta img {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--border-light);
+            transition: var(--transition);
+        }
+
+        .post .meta img:hover {
+            border-color: var(--primary-color);
+        }
+
+        .post .meta .user-info {
+            flex: 1;
+        }
+
+        .post .meta .user-name {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 2px;
+        }
+
+        .post .meta .post-time {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 400;
+        }
+
+        .post-content {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+
+        .post img {
+            width: 80%;
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--border-radius);
+            margin-top: 1rem;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+        }
+
+        .post img:hover {
+            box-shadow: var(--shadow-md);
+            transform: scale(1.02);
+        }
+
+        /* Comments Section */
+        .comments-section {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid var(--border-light);
+        }
+
+        .comments-header {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .comment {
+            background: #fafbfc;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--primary-color);
+            transition: var(--transition);
+        }
+
+        .comment:hover {
+            background: #f0f2f5;
+            transform: translateX(4px);
+        }
+
+        .comment-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .comment-author {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .comment-time {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .comment-text {
+            color: var(--text-dark);
+            line-height: 1.5;
+        }
+
+        .no-comments {
+            color: var(--text-muted);
+            font-style: italic;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        /* Comment Form */
+        .comment-form {
+            margin-top: 1rem;
+        }
+
+        .comment-form textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            outline: none;
+            font-size: 0.95rem;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 80px;
+            transition: var(--transition);
+            background: white;
+        }
+
+        .comment-form textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(135, 38, 87, 0.1);
+        }
+
+        .comment-form button {
+            margin-top: 8px;
+            background: var(--primary-color);
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .comment-form button:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .login-prompt {
+            color: var(--text-muted);
+            font-style: italic;
+            text-align: center;
+            padding: 1rem;
+            background: var(--border-light);
+            border-radius: var(--border-radius);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            main {
+                margin-left: 280px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            main {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            .search-section {
+                padding: 1.5rem;
+            }
+
+            .search-bar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .search-bar button {
+                align-self: center;
+                min-width: 120px;
+            }
+
+            .post {
+                padding: 1rem;
+            }
+
+            .form-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(135, 38, 87, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <!-- Sidebar -->
-   <?php include 'sidebar.php'; ?>
+    <div class="container">
+        <!-- Sidebar -->
+        <?php include 'sidebar.php'; ?>
 
-    <!-- Main Content -->
-    <main>
-<form method="GET" action="" class="search-bar">
-  <input type="text" name="q" placeholder="Search..." required>
-  <button type="submit">Search</button>
-</form>
+        <!-- Main Content -->
+        <main>
+            <!-- Search Section -->
+            <div class="search-section">
+                <form method="GET" action="" class="search-bar">
+                    <div class="search-input-container">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" name="q" placeholder="Search posts, topics, and more..." required>
+                    </div>
+                    <button type="submit">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </form>
+            </div>
 
-      <?php if ($isLoggedIn): ?>
-        <div class="post-form">
-          <form action="create_post.php" method="POST" enctype="multipart/form-data">
-            <textarea name="content" placeholder="What's on your mind?" required></textarea><br>
-            <input type="file" name="image" accept="image/*"><br><br>
-            <button type="submit">Post</button>
-          </form>
-        </div>
-      <?php endif; ?>
+            <?php if ($isLoggedIn): ?>
+                <div class="post-form">
+                    <form action="create_post.php" method="POST" enctype="multipart/form-data">
+                        <textarea name="content" placeholder="What's on your mind? Share your thoughts with the community..." required></textarea>
+                        <div class="form-actions">
+                            <div class="file-input-container">
+                                <input type="file" name="image" accept="image/*" id="image-upload">
+                                <label for="image-upload" class="file-label">
+                                    <i class="fas fa-image"></i> Add Photo
+                                </label>
+                            </div>
+                            <button type="submit">
+                                <i class="fas fa-paper-plane"></i> Share Post
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            <?php endif; ?>
 
-      <?php foreach ($posts as $post): ?>
-        <div class="post">
-          <div class="meta">
-            <img src="<?= htmlspecialchars($post['profile_pic'] ?? 'uploads/default.jpeg') ?>" alt="user">
-            <strong><?= htmlspecialchars($post['name']) ?></strong>
-            <span style="color: gray; font-size: 12px;"><?= htmlspecialchars($post['created_at']) ?></span>
-          </div>
-          <p><?= nl2br(htmlspecialchars($post['content'])) ?></p>
-          <?php if (!empty($post['image'])): ?>
-            <img src="<?= htmlspecialchars($post['image']) ?>" alt="Post Image">
-          <?php endif; ?>
-          <?php
-// Fetch comments for this post
-$post_id = $post['id'];
-$stmt = $conn->prepare("SELECT comments.comment_text, comments.created_at, users.name 
-                        FROM comments 
-                        JOIN users ON comments.user_id = users.id 
-                        WHERE comments.post_id = ? 
-                        ORDER BY comments.created_at ASC");
-$stmt->bind_param("i", $post_id);
-$stmt->execute();
-$comments_result = $stmt->get_result();
-?>
+            <?php foreach ($posts as $post): ?>
+                <div class="post">
+                    <div class="meta">
+                        <img src="<?= htmlspecialchars($post['profile_pic'] ?? 'uploads/default.jpeg') ?>" alt="<?= htmlspecialchars($post['name']) ?>">
+                        <div class="user-info">
+                            <div class="user-name"><?= htmlspecialchars($post['name']) ?></div>
+                            <div class="post-time"><?= htmlspecialchars($post['created_at']) ?></div>
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        <?= nl2br(htmlspecialchars($post['content'])) ?>
+                    </div>
+                    <?php if (!empty($post['image'])): ?>
+                        <img src="<?= htmlspecialchars($post['image']) ?>" alt="Post Image">
+                    <?php endif; ?>
+                    
+                    <?php
+                    // Fetch comments for this post
+                    $post_id = $post['id'];
+                    $stmt = $conn->prepare("SELECT comments.comment_text, comments.created_at, users.name 
+                                            FROM comments 
+                                            JOIN users ON comments.user_id = users.id 
+                                            WHERE comments.post_id = ? 
+                                            ORDER BY comments.created_at ASC");
+                    $stmt->bind_param("i", $post_id);
+                    $stmt->execute();
+                    $comments_result = $stmt->get_result();
+                    ?>
 
-<div class="comments-section" style="margin-top: 15px; padding-left: 20px; border-left: 2px solid #ccc;">
-  <h4>Comments:</h4>
-  <?php if ($comments_result->num_rows > 0): ?>
-    <?php while ($comment = $comments_result->fetch_assoc()): ?>
-      <div class="comment" style="margin-bottom: 10px;">
-        <strong><?= htmlspecialchars($comment['name']) ?></strong>
-        <span style="color: gray; font-size: 12px;">(<?= htmlspecialchars($comment['created_at']) ?>)</span>
-        <p><?= nl2br(htmlspecialchars($comment['comment_text'])) ?></p>
-      </div>
-    <?php endwhile; ?>
-  <?php else: ?>
-    <p>No comments yet. Be the first to comment!</p>
-  <?php endif; ?>
+                    <div class="comments-section">
+                        <div class="comments-header">
+                            <i class="fas fa-comments"></i>
+                            Comments (<?= $comments_result->num_rows ?>)
+                        </div>
+                        
+                        <?php if ($comments_result->num_rows > 0): ?>
+                            <?php while ($comment = $comments_result->fetch_assoc()): ?>
+                                <div class="comment">
+                                    <div class="comment-header">
+                                        <span class="comment-author"><?= htmlspecialchars($comment['name']) ?></span>
+                                        <span class="comment-time"><?= htmlspecialchars($comment['created_at']) ?></span>
+                                    </div>
+                                    <div class="comment-text"><?= nl2br(htmlspecialchars($comment['comment_text'])) ?></div>
+                                </div>
+                            <?php endwhile; ?>
+                        <?php else: ?>
+                            <div class="no-comments">
+                                <i class="fas fa-comment-slash"></i>
+                                No comments yet. Be the first to share your thoughts!
+                            </div>
+                        <?php endif; ?>
 
-  <?php if ($isLoggedIn): ?>
-    <form action="submit_comment.php" method="POST" style="margin-top: 10px;">
-      <input type="hidden" name="post_id" value="<?= $post_id ?>">
-      <textarea name="comment_text" placeholder="Write your comment..." required style="width: 100%; height: 60px;"></textarea><br>
-      <button type="submit" style="background:#872657; color:#fff; padding:5px 10px; border:none; border-radius:5px; cursor:pointer;">Post Comment</button>
-    </form>
-  <?php else: ?>
-    <p><em>Log in to leave a comment.</em></p>
-  <?php endif; ?>
-</div>
+                        <?php if ($isLoggedIn): ?>
+                            <form action="submit_comment.php" method="POST" class="comment-form">
+                                <input type="hidden" name="post_id" value="<?= $post_id ?>">
+                                <textarea name="comment_text" placeholder="Share your thoughts on this post..." required></textarea>
+                                <button type="submit">
+                                    <i class="fas fa-reply"></i> Post Comment
+                                </button>
+                            </form>
+                        <?php else: ?>
+                            <div class="login-prompt">
+                                <i class="fas fa-sign-in-alt"></i>
+                                Please log in to leave a comment and join the conversation.
+                            </div>
+                        <?php endif; ?>
+                    </div>
 
-<?php $stmt->close(); ?>
-
-        </div>
-      <?php endforeach; ?>
-
-      
-    </main>
-  </div>
+                    <?php $stmt->close(); ?>
+                </div>
+            <?php endforeach; ?>
+        </main>
+    </div>
 </body>
 </html>
