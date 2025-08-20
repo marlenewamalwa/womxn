@@ -45,6 +45,25 @@ foreach ($statsQueries as $query => $var) {
         $$var = $row['count'];
     }
 }
+// Sample data for keyword search
+$items = [
+    "Lesbian fashion tips",
+    "Queer women events",
+    "Rainbow accessories",
+    "WOMXN blog updates",
+    "LGBTQ+ stories",
+];
+
+// Handle search
+$searchResults = [];
+if (isset($_GET['q']) && !empty($_GET['q'])) {
+    $query = strtolower($_GET['q']);
+    foreach ($items as $item) {
+        if (strpos(strtolower($item), $query) !== false) {
+            $searchResults[] = $item;
+        }
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -54,20 +73,35 @@ foreach ($statsQueries as $query => $var) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>WOMXN | Queer Platform</title>
   <link rel="stylesheet" href="styles.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <style>
-    /* Global styles */
+    /* Global styles with lesbian flag colors */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+:root {
+  --lesbian-orange: #D62900;
+  --lesbian-light-orange: #FF9B56;
+  --lesbian-white: #ffe6f0;
+  --lesbian-light-pink: #D462A6;
+  --lesbian-dark-pink: #A50062;
+  --text-dark: #1a1a1a;
+  --text-gray: #6b7280;
+  --bg-light: #fef7ff;
+  --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.06);
+  --shadow-medium: 0 8px 30px rgba(0, 0, 0, 0.12);
+  --border-radius: 16px;
+}
+
 body {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Inter', sans-serif;
   display: flex;
-  background-color: #ffe6f0;
-  color: #2b2b2b;
+  background: var(--lesbian-white);
+  color: var(--text-dark);
+  line-height: 1.6;
 }
 
 .container {
@@ -80,324 +114,628 @@ main {
   margin-left: 240px;
   padding: 2rem;
   flex: 1;
+  min-height: 100vh;
 }
 
-
-
-/* Quick navigation */
-.quick-nav {
-  background: white;
-  padding: 2rem;
-  border-radius: 15px;
-  margin: 3rem 0;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+/* Topbar */
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 0;
+    margin-bottom: 2rem;
 }
 
-.quick-nav h2 {
-  text-align: center;
-  margin-bottom: 2rem;
-  color: #872657;
+.logo {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--lesbian-dark-pink);
 }
 
-.nav-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
+/* Search bar */
+.search {
+    display: flex;
+    align-items: center;
+    background: white;
+    border-radius: 50px;
+    padding: 0.5rem;
+    box-shadow: var(--shadow-soft);
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
 }
 
-.nav-card {
-  padding: 1.5rem;
-  border: 2px solid #f0f0f0;
-  border-radius: 12px;
-  text-align: center;
-  transition: all 0.3s ease;
-  text-decoration: none;
-  color: #2b2b2b;
+.search:focus-within {
+    border-color: var(--lesbian-light-pink);
+    box-shadow: 0 0 0 4px rgba(212, 98, 166, 0.1);
 }
 
-.nav-card:hover {
-  border-color: #872657;
-  background: #fff0f7;
-  transform: translateY(-3px);
+.search input {
+    border: none;
+    outline: none;
+    padding: 0.75rem 1.25rem;
+    border-radius: 50px;
+    width: 280px;
+    font-size: 0.95rem;
+    font-weight: 400;
 }
 
-.nav-icon {
-  font-size: 2rem;
-  margin-bottom: 1rem;
+.search-btn {
+    background: var(--lesbian-light-pink);
+    border: none;
+    color: white;
+    font-size: 1rem;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    margin-left: 0.3rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.nav-card h3 {
-  color: #872657;
-  margin-bottom: 0.5rem;
+.search-btn:hover {
+    background: var(--lesbian-dark-pink);
+    transform: translateY(-1px);
 }
 
-
-
-
-.section {
-  margin-bottom: 4rem;
+/* Search results */
+.results {
+    margin: 1rem 0 2rem;
 }
 
-h2 {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
+.results ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 0.75rem;
 }
 
-p {
-  font-size: 1.1rem;
-  line-height: 1.7;
+.results li {
+    background: white;
+    padding: 1rem 1.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-soft);
+    border-left: 4px solid var(--lesbian-light-orange);
+    transition: all 0.3s ease;
 }
 
-ul.mission-list {
-  list-style: none;
-  padding-left: 0;
+.results li:hover {
+    transform: translateX(8px);
+    box-shadow: var(--shadow-medium);
 }
 
-ul.mission-list li {
-  margin-bottom: 0.8rem;
-  font-size: 1.1rem;
+/* Hero Section */
+.hero {
+    background: white;
+    border-radius: 24px;
+    padding: 4rem;
+    margin-bottom: 4rem;
+    text-align: center;
+    box-shadow: var(--shadow-soft);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, var(--lesbian-orange), var(--lesbian-light-orange), var(--lesbian-white), var(--lesbian-light-pink), var(--lesbian-dark-pink));
+}
+
+.hero h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: var(--text-dark);
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+}
+
+.hero p {
+    font-size: 1.25rem;
+    color: var(--text-gray);
+    max-width: 600px;
+    margin: 0 auto 2rem;
+}
+
+/* Call to Action */
+.cta {
+    background: white;
+    padding: 4rem;
+    border-radius: 24px;
+    text-align: center;
+    box-shadow: var(--shadow-soft);
+    margin-bottom: 4rem;
+    position: relative;
+}
+
+.cta h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    color: var(--lesbian-dark-pink);
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.cta p {
+    font-size: 1.1rem;
+    color: var(--text-gray);
+    margin-bottom: 2.5rem;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* Buttons */
 .btn {
-  display: inline-block;
-  background-color: #872657;
-  color: white;
-  padding: 0.75rem 1.5rem;
-  text-decoration: none;
-  border-radius: 25px;
-  font-weight: bold;
-  margin-top: 1.5rem;
-  transition: all 0.3s ease;
-  border: none;
-  cursor: pointer;
+    display: inline-block;
+    background-color: var(--lesbian-light-pink);
+    color: white;
+    padding: 1rem 2rem;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1rem;
+    margin: 0.5rem;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
 }
 
 .btn:hover {
-  background-color: #6b1d45;
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    background-color: var(--lesbian-dark-pink);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(165, 0, 98, 0.3);
 }
 
 .btn-secondary {
-  background: transparent;
-  color: #872657;
-  border: 2px solid #872657;
+    background: transparent;
+    color: var(--lesbian-dark-pink);
+    border: 2px solid var(--lesbian-light-pink);
 }
 
 .btn-secondary:hover {
-  background: #872657;
-  color: white;
+    background: var(--lesbian-light-pink);
+    color: white;
+    border-color: var(--lesbian-light-pink);
 }
 
-/* Latest posts */
-.latest-posts {
-  max-width: 100%;
-  margin: 40px auto;
-  background: #fff;
-  padding: 25px;
-  border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+/* Quick Navigation */
+.quick-nav {
+    margin-bottom: 4rem;
 }
 
-.latest-posts h2 {
-  text-align: center;
-  margin-bottom: 20px;
-  color: #872657;
+.quick-nav h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    text-align: center;
+    margin-bottom: 3rem;
+    color: var(--lesbian-dark-pink);
+    font-size: 2.2rem;
+    font-weight: 700;
 }
 
-.post {
-  border-bottom: 1px solid #eee;
-  padding: 20px 0;
-  transition: all 0.3s ease;
+.nav-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
 }
 
-.post:last-child {
-  border-bottom: none;
+.nav-card {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 20px;
+    text-align: center;
+    transition: all 0.4s ease;
+    text-decoration: none;
+    color: var(--text-dark);
+    box-shadow: var(--shadow-soft);
+    position: relative;
+    overflow: hidden;
 }
 
-.post:hover {
-  background: #fff8fc;
-  border-radius: 8px;
-  padding: 20px 15px;
+.nav-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--lesbian-orange);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
 }
 
-.post-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.nav-card:hover::before {
+    transform: scaleX(1);
 }
 
-.avatar {
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
-  border: 2px solid #872657;
+.nav-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-medium);
 }
 
-.post-image {
-  height: auto;
-  max-width: 90%;
-  margin-top: 10px;
-  border-radius: 12px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+.nav-icon {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    filter: grayscale(0.3);
+    transition: filter 0.3s ease;
 }
 
+.nav-card:hover .nav-icon {
+    filter: grayscale(0);
+}
+
+.nav-card h3 {
+    color: var(--lesbian-dark-pink);
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.nav-card p {
+    color: var(--text-gray);
+    font-size: 1rem;
+}
+
+/* Latest Events */
 .latest-events {
-  max-width: 100%;
-  padding: 25px;
-  background: white;
-  text-align: center;
-  border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    background: white;
+    padding: 3rem;
+    border-radius: 24px;
+    box-shadow: var(--shadow-soft);
+    margin-bottom: 4rem;
 }
 
 .latest-events h2 {
-  color: #872657;
+    font-family: 'Space Grotesk', sans-serif;
+    color: var(--lesbian-dark-pink);
+    font-size: 2.2rem;
+    text-align: center;
+    margin-bottom: 3rem;
+    font-weight: 700;
 }
 
 .event-list {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+    display: grid;
+    gap: 2rem;
 }
 
 .event-card {
-  background: linear-gradient(135deg, #2c2c2c, #1a1a1a);
-  color: #fff;
-  display: flex;
-  gap: 15px;
-  padding: 20px;
-  border-radius: 12px;
-  align-items: flex-start;
-  transition: transform 0.3s ease;
+    background: var(--bg-light);
+    display: flex;
+    gap: 2rem;
+    padding: 2rem;
+    border-radius: 20px;
+    align-items: flex-start;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
 }
 
 .event-card:hover {
-  transform: translateY(-3px);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-medium);
+    border-color: var(--lesbian-light-orange);
 }
 
 .event-card img {
-  width: 120px;
-  height: 120px;
-  object-fit: cover;
-  border-radius: 8px;
+    width: 160px;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 16px;
+    flex-shrink: 0;
 }
 
 .event-details h3 {
-  margin-top: 0;
-  color: #ff4081;
+    margin-top: 0;
+    color: var(--lesbian-dark-pink);
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.event-details p {
+    color: var(--text-gray);
+    margin-bottom: 0.5rem;
 }
 
 .event-details a {
-  color: #ffc107;
-  text-decoration: underline;
+    color: var(--lesbian-orange);
+    text-decoration: none;
+    font-weight: 500;
 }
 
-/* Newsletter signup */
+.event-details a:hover {
+    text-decoration: underline;
+}
+
+/* Latest Posts */
+.latest-posts {
+    background: white;
+    padding: 3rem;
+    border-radius: 24px;
+    box-shadow: var(--shadow-soft);
+    margin-bottom: 4rem;
+}
+
+.latest-posts h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    text-align: center;
+    margin-bottom: 3rem;
+    color: var(--lesbian-dark-pink);
+    font-size: 2.2rem;
+    font-weight: 700;
+}
+
+.post {
+    border-bottom: 2px solid var(--bg-light);
+    padding: 2rem 0;
+    transition: all 0.3s ease;
+}
+
+.post:last-child {
+    border-bottom: none;
+}
+
+.post:hover {
+    background: var(--bg-light);
+    border-radius: 16px;
+    padding: 2rem 1.5rem;
+    margin: 0 -1.5rem;
+}
+
+.post-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 3px solid var(--lesbian-light-pink);
+    object-fit: cover;
+}
+
+.post-header strong {
+    color: var(--lesbian-dark-pink);
+    font-weight: 600;
+}
+
+.post p {
+    color: var(--text-dark);
+    margin-bottom: 1rem;
+    font-size: 1.05rem;
+}
+
+.post-image {
+    width: 100%;
+    max-width: 300px;
+    height: 300px;
+    margin: 1rem 0;
+    border-radius: 16px;
+    box-shadow: var(--shadow-soft);
+}
+
+.post small {
+    color: var(--text-gray);
+    font-size: 0.9rem;
+}
+
+/* Newsletter */
 .newsletter {
-  background: linear-gradient(135deg, #872657, #c44569);
-  color: white;
-  padding: 3rem;
-  border-radius: 15px;
-  text-align: center;
-  margin: 3rem 0;
+    background: var(--lesbian-dark-pink);
+    color: white;
+    padding: 4rem;
+    border-radius: 24px;
+    text-align: center;
+    margin-bottom: 4rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.newsletter::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: url('https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=60') center/cover;
+    opacity: 0.1;
+    z-index: 0;
+}
+
+.newsletter > * {
+    position: relative;
+    z-index: 1;
 }
 
 .newsletter h2 {
-  margin-bottom: 1rem;
+    font-family: 'Space Grotesk', sans-serif;
+    margin-bottom: 1rem;
+    font-size: 2.2rem;
 }
 
 .newsletter p {
-  margin-bottom: 2rem;
-  opacity: 0.9;
+    margin-bottom: 2.5rem;
+    opacity: 0.9;
+    font-size: 1.1rem;
 }
 
 .newsletter-form {
-  display: flex;
-  justify-content: center;
-  gap: 0;
-  max-width: 500px;
-  margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    max-width: 500px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 50px;
+    padding: 0.5rem;
+    box-shadow: var(--shadow-medium);
 }
 
 .newsletter-form input {
-  flex: 1;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 25px 0 0 25px;
-  outline: none;
-  font-size: 1rem;
+    flex: 1;
+    padding: 1rem 1.5rem;
+    border: none;
+    border-radius: 50px;
+    outline: none;
+    font-size: 1rem;
 }
 
 .newsletter-form button {
-  padding: 12px 25px;
-  background: white;
-  color: #872657;
-  border: none;
-  border-radius: 0 25px 25px 0;
-  cursor: pointer;
-  font-weight: bold;
-  transition: all 0.3s ease;
+    padding: 1rem 2rem;
+    background: var(--lesbian-orange);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    white-space: nowrap;
 }
 
 .newsletter-form button:hover {
-  background: #f0f0f0;
-  transform: scale(1.05);
+    background: var(--lesbian-light-orange);
+    transform: scale(1.02);
 }
 
-/* CTA */
-.cta {
-  background: linear-gradient(45deg, #fff0f7, #ffe6f0);
-  padding: 3rem;
-  border-radius: 15px;
-  text-align: center;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+/* Featured Images */
+.featured-image {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 20px;
+    box-shadow: var(--shadow-soft);
+    margin: 2rem 0;
 }
 
-.cta h2 {
-  color: #872657;
+/* Community Stats */
+.community-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    margin: 3rem 0;
+}
+
+.stat-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: var(--shadow-soft);
+    border-top: 4px solid var(--lesbian-orange);
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--lesbian-dark-pink);
+    display: block;
+}
+
+.stat-label {
+    color: var(--text-gray);
+    font-weight: 500;
+    margin-top: 0.5rem;
 }
 
 /* Footer */
 footer {
-  text-align: center;
-  font-size: 0.9rem;
-  color: #555;
-  padding: 3rem 0 0;
-  border-top: 1px solid #e0e0e0;
-  margin-top: 3rem;
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--text-gray);
+    padding: 3rem 0;
+    border-top: 2px solid var(--bg-light);
+    margin-top: 3rem;
+    background: white;
+    border-radius: 24px 24px 0 0;
+}
+
+footer a {
+    color: var(--lesbian-dark-pink);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+footer a:hover {
+    text-decoration: underline;
 }
 
 /* Mobile responsiveness */
 @media (max-width: 768px) {
-  main {
-    margin-left: 0;
-    padding: 1rem;
-  }
-  
-  .hero h1 {
-    font-size: 2.5rem;
-  }
-  
-  .stats-grid {
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  }
-  
-  .latest-events {
-    margin-left: 0;
-  }
-  
-  .newsletter-form {
-    flex-direction: column;
-    gap: 1rem;
-  }
-  
-  .newsletter-form input,
-  .newsletter-form button {
-    border-radius: 25px;
-  }
+    main {
+        margin-left: 0;
+        padding: 1rem;
+    }
+    
+    .hero {
+        padding: 2.5rem 1.5rem;
+    }
+    
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+    
+    .nav-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .event-card {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .event-card img {
+        width: 100%;
+        height: 200px;
+        align-self: center;
+    }
+    
+    .newsletter-form {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+    }
+    
+    .newsletter-form input,
+    .newsletter-form button {
+        border-radius: 50px;
+    }
+    
+    .search {
+        width: 100%;
+    }
+    
+    .search input {
+        width: 100%;
+    }
+    
+    .topbar {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}
+
+/* Accessibility improvements */
+.btn:focus,
+.search-btn:focus,
+.newsletter-form button:focus {
+    outline: 2px solid var(--lesbian-orange);
+    outline-offset: 2px;
+}
+
+.nav-card:focus {
+    outline: 2px solid var(--lesbian-orange);
+    outline-offset: 4px;
 }
 </style>
 </head>
@@ -408,17 +746,61 @@ footer {
 
     <!-- Main Content -->
     <main>
-   
+      <!-- Topbar with search -->
+      <div class="topbar">
+     
+        <form class="search" method="GET" action="">
+            <input type="text" name="q" placeholder="Search the community..." value="<?php echo isset($_GET['q']) ? htmlspecialchars($_GET['q']) : ''; ?>">
+            <button class="search-btn" type="submit">🔍</button>
+        </form>
+      </div>
 
-      
- <!-- Call to Action -->
-      <section id="join" class="section cta">
-        <h2>Be Part of the Movement 💕</h2>
-        <p>We're building something powerful together. Join our community to connect, share, and grow with fellow WOMXN and queer individuals across Kenya and beyond.</p>
-        <a href="signup.php" class="btn">Join the Community</a>
-        <a href="about.php" class="btn btn-secondary">Learn More</a>
+      <!-- Dynamic Search Results -->
+      <div class="results">
+          <?php if (!empty($searchResults)) : ?>
+              <ul>
+                  <?php foreach ($searchResults as $result) : ?>
+                      <li><?php echo htmlspecialchars($result); ?></li>
+                  <?php endforeach; ?>
+              </ul>
+          <?php elseif (isset($_GET['q'])): ?>
+              <p style="text-align: center; color: var(--text-gray); font-style: italic;">No results found for "<?php echo htmlspecialchars($_GET['q']); ?>"</p>
+          <?php endif; ?>
+      </div>
+
+      <!-- Hero Section -->
+      <section class="hero">
+        <h1>Welcome to WOMXN</h1>
+        <p>A vibrant community celebrating queer women, non-binary folks, and allies. Connect, share stories, and build lasting friendships in a safe, supportive space.</p>
+        <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Diverse group of women celebrating" class="featured-image">
       </section>
-    
+
+      <!-- Community Stats -->
+      <div class="community-stats">
+        <div class="stat-card">
+          <span class="stat-number"><?php echo $userCount; ?>+</span>
+          <div class="stat-label">Community Members</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number"><?php echo $postCount; ?>+</span>
+          <div class="stat-label">Stories Shared</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number"><?php echo $eventCount; ?>+</span>
+          <div class="stat-label">Events Hosted</div>
+        </div>
+      </div>
+
+      <!-- Call to Action -->
+      <section class="cta">
+        <h2>Be Part of the Movement 💕</h2>
+        <p>Join thousands of amazing queer women and allies building connections, sharing experiences, and creating positive change across Kenya and beyond.</p>
+        <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Women supporting each other" class="featured-image">
+        <div>
+          <a href="signup.php" class="btn">Join the Community</a>
+          <a href="about.php" class="btn btn-secondary">Learn More</a>
+        </div>
+      </section>
 
       <!-- Quick Navigation -->
       <section class="quick-nav">
@@ -427,17 +809,17 @@ footer {
           <a href="feed.php" class="nav-card">
             <div class="nav-icon">💬</div>
             <h3>Community Feed</h3>
-            <p>Join the conversation and share your story</p>
+            <p>Join conversations, share your authentic self, and connect with like-minded individuals</p>
           </a>
           <a href="events.php" class="nav-card">
             <div class="nav-icon">📅</div>
-            <h3>Events</h3>
-            <p>Discover meetups, workshops, and celebrations</p>
+            <h3>Events & Meetups</h3>
+            <p>Discover local gatherings, workshops, pride celebrations, and community activities</p>
           </a>
           <a href="#resources" class="nav-card">
-            <div class="nav-icon">📚</div>
+            <div class="nav-icon">🌈</div>
             <h3>Opportunities</h3>
-            <p>Work with other queer folk</p>
+            <p>Find job opportunities, collaborations, and partnerships within our community</p>
           </a>
         </div>
       </section>
@@ -445,6 +827,8 @@ footer {
       <!-- Latest Events -->
       <section class="latest-events">
         <h2>Upcoming Events</h2>
+        <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Community gathering" class="featured-image">
+        
         <?php if ($eventResult && $eventResult->num_rows > 0): ?>
           <div class="event-list">
             <?php while($event = $eventResult->fetch_assoc()): ?>
@@ -455,59 +839,69 @@ footer {
                   <p><?= htmlspecialchars($event['description']) ?></p>
                   <p><strong>Date:</strong> <?= htmlspecialchars($event['event_date']) ?></p>
                   <?php if (!empty($event['ticket_link'])): ?>
-                    <p><a href="<?= htmlspecialchars($event['ticket_link']) ?>" target="_blank">Get Tickets</a></p>
+                    <p><a href="<?= htmlspecialchars($event['ticket_link']) ?>" target="_blank">Get Tickets →</a></p>
                   <?php endif; ?>
                 </div>
               </div>
             <?php endwhile; ?>
           </div>
         <?php else: ?>
-          <p>No events yet. Stay tuned for exciting community gatherings! 🌟</p>
+          <div style="text-align: center; padding: 2rem; color: var(--text-gray);">
+            <p>No events scheduled yet. Stay tuned for exciting community gatherings! 🌟</p>
+          </div>
         <?php endif; ?>
-        <a href="events.php" class="btn">View All Events</a>
+        <div style="text-align: center; margin-top: 2rem;">
+          <a href="events.php" class="btn">View All Events</a>
+        </div>
       </section>
 
- <!-- Latest Posts -->
+      <!-- Latest Posts -->
       <section class="latest-posts">
-    <h2>💫 Latest Community Posts</h2>
+        <h2>💫 Latest Community Stories</h2>
+        
+        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Women sharing stories" class="featured-image">
 
-    <?php if (empty($latestPosts)): ?>
-        <p>No posts yet. Be the first to share your story! ✨</p>
-    <?php else: ?>
-        <?php foreach ($latestPosts as $post): ?>
-            <div class="post">
-                <div class="post-header">
-                    <img src="<?= htmlspecialchars($post['profile_pic']) ?>" alt="Profile" class="avatar">
-                    <strong><?= htmlspecialchars($post['name']) ?></strong>
-                </div>
-                <p><?= nl2br(htmlspecialchars($post['content'])) ?></p>
-
-                <?php if (!empty($post['image'])): ?>
-                    <img src="<?= htmlspecialchars($post['image']) ?>" class="post-image" alt="Post Image">
-                <?php endif; ?>
-
-                <small><?= date("F j, Y, g:i a", strtotime($post['created_at'])) ?></small>
+        <?php if (empty($latestPosts)): ?>
+            <div style="text-align: center; padding: 2rem; color: var(--text-gray);">
+                <p>No posts yet. Be the first to share your story! ✨</p>
             </div>
-        <?php endforeach; ?>
-    <?php endif; ?>
+        <?php else: ?>
+            <?php foreach ($latestPosts as $post): ?>
+                <div class="post">
+                    <div class="post-header">
+                        <img src="<?= htmlspecialchars($post['profile_pic']) ?>" alt="Profile" class="avatar">
+                        <strong><?= htmlspecialchars($post['name']) ?></strong>
+                    </div>
+                    <p><?= nl2br(htmlspecialchars($post['content'])) ?></p>
 
-    <a href="feed.php" class="btn">View Full Feed</a>
-</section>
+                    <?php if (!empty($post['image'])): ?>
+                        <img src="<?= htmlspecialchars($post['image']) ?>" class="post-image" alt="Post Image">
+                    <?php endif; ?>
+
+                    <small><?= date("F j, Y, g:i a", strtotime($post['created_at'])) ?></small>
+                </div>
+            <?php endforeach; ?>
+        <?php endif; ?>
+
+        <div style="text-align: center; margin-top: 2rem;">
+          <a href="feed.php" class="btn">View Full Feed</a>
+        </div>
+      </section>
 
       <!-- Newsletter Signup -->
       <section class="newsletter">
         <h2>📬 Stay Connected</h2>
-        <p>Get weekly updates on events, featured stories, and community highlights</p>
+        <p>Get weekly updates on events, featured stories, community highlights, and opportunities to connect with amazing people.</p>
         <form class="newsletter-form" action="newsletter_signup.php" method="POST">
           <input type="email" name="email" placeholder="Enter your email address" required>
           <button type="submit">Subscribe</button>
         </form>
       </section>
 
-           <footer>
+      <footer>
         <p>Made with love in Kenya 🇰🇪🏳️‍🌈 | © 2025 WOMXN | 
-        <a href="privacy.php" style="color: #872657;">Privacy Policy</a> | 
-        <a href="terms.php" style="color: #872657;">Terms of Service</a></p>
+        <a href="privacy.php">Privacy Policy</a> | 
+        <a href="terms.php">Terms of Service</a></p>
       </footer>
     </main>
   </div>

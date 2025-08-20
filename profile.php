@@ -216,6 +216,7 @@ $stmt->close();
             padding: 2rem;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
+           height:auto;
         }
 
         .section-header {
@@ -280,6 +281,16 @@ $stmt->close();
             color: #cbd5e0;
             margin-bottom: 1rem;
         }
+         .postbtn {
+            display: inline-block;
+            background: #872657;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-top: 1rem;}
 
         /* Sidebar Panels */
         .sidebar-panel {
@@ -319,6 +330,7 @@ $stmt->close();
             border-radius: 10px;
             margin-bottom: 0.5rem;
             transition: background-color 0.3s ease;
+         
         }
 
         .member-item:hover, .chat-item:hover {
@@ -434,8 +446,13 @@ $stmt->close();
                     <div class="section-header">
                         <i class="fas fa-newspaper"></i>
                         <h2>Your Posts</h2>
-                    </div>
                     
+                    </div>
+                        <div>
+                             <a href="create_post.php" class="new-post-btn">
+               New Post
+            </a>
+                        </div>
                     <?php if (!empty($posts)): ?>
                         <?php foreach ($posts as $post): ?>
                             <div class="post">
@@ -455,7 +472,9 @@ $stmt->close();
                             <p>You haven't made any posts yet.</p>
                         </div>
                     <?php endif; ?>
+                       
                 </div>
+                
 
                 <!-- Sidebar Panels -->
                 <div class="sidebar-content">

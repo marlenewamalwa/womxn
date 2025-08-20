@@ -402,9 +402,9 @@ if (isset($_GET['q'])) {
         }
 
         .post img {
-            width: 80%;
+            width: 400px;
             max-width: 100%;
-            height: auto;
+            height:400px;
             border-radius: var(--border-radius);
             margin-top: 1rem;
             box-shadow: var(--shadow-sm);
@@ -627,7 +627,9 @@ if (isset($_GET['q'])) {
             <?php foreach ($posts as $post): ?>
                 <div class="post">
                     <div class="meta">
-                        <img src="<?= htmlspecialchars($post['profile_pic'] ?? 'uploads/default.jpeg') ?>" alt="<?= htmlspecialchars($post['name']) ?>">
+                         <img src="<?= htmlspecialchars($row['profile_pic'] ?: 'uploads/default.jpeg') ?>" 
+                              alt="<?= htmlspecialchars($post['name']) ?>'s Profile"
+                              onerror="this.src='uploads/default.jpeg'">
                         <div class="user-info">
                             <div class="user-name"><?= htmlspecialchars($post['name']) ?></div>
                             <div class="post-time"><?= htmlspecialchars($post['created_at']) ?></div>

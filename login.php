@@ -115,8 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
      data-text="signin_with"
      data-size="large">
 </div>
-    <p>Or log in with Google:</p>
-    </form>
+      </form>
   </div>
 </body>
 </html>

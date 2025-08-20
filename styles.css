@@ -1,8 +1,8 @@
 /* Sidebar */
 .sidebar {
   width: 220px;
-  background-color: #3a0b2d;
-  color: white;
+  background-color: #ffe6f0;
+
   padding: 2rem 1rem;
   height: 100vh;
   position: fixed;
@@ -28,7 +28,7 @@
 }
 
 .sidebar ul li a {
-  color: white;
+  color: #872657;
   text-decoration: none;
   font-weight: 500;
   display: block;
@@ -38,7 +38,7 @@
 }
 
 .sidebar ul li a:hover {
-  background-color: #872657;
+  background-color: #fff;
 }
 
 

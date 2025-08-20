@@ -13,7 +13,7 @@ if (isset($_POST['credential'])) {
 
     if (isset($data['email'])) {
         $email = $data['email'];
-        $name = $data['name'] ?? 'Google User';
+        $name  = $data['name'] ?? 'Google User';
 
         // Check if user already exists
         $stmt = $conn->prepare("SELECT id, name FROM users WHERE email = ?");
@@ -25,17 +25,19 @@ if (isset($_POST['credential'])) {
             // Existing user → log in
             $stmt->bind_result($id, $dbName);
             $stmt->fetch();
-            $_SESSION['user_id'] = $id;
+
+            $_SESSION['user_id']   = $id;
             $_SESSION['user_name'] = $dbName;
+
         } else {
-            // New user → create account
+            // New user → create account with provider=google
             $stmt->close();
-            $stmt = $conn->prepare("INSERT INTO users (name, email) VALUES (?, ?)");
+            $stmt = $conn->prepare("INSERT INTO users (name, email, password, provider) VALUES (?, ?, NULL, 'google')");
             $stmt->bind_param("ss", $name, $email);
             $stmt->execute();
             $newId = $stmt->insert_id;
 
-            $_SESSION['user_id'] = $newId;
+            $_SESSION['user_id']   = $newId;
             $_SESSION['user_name'] = $name;
         }
 
@@ -48,3 +50,4 @@ if (isset($_POST['credential'])) {
 } else {
     echo "No credential received.";
 }
+?>
