@@ -444,9 +444,12 @@ function timeAgo($datetime) {
                             <div class="member-card">
                                 <div class="member-header">
                                     <div class="member-avatar">
-                                        <img src="<?= htmlspecialchars($row['profile_pic'] ?: 'uploads/default.jpeg') ?>" 
-                                             alt="<?= htmlspecialchars($row['name']) ?>'s Profile"
-                                             onerror="this.src='uploads/default.jpeg'">
+                                        <img 
+  src="<?= htmlspecialchars($pic, ENT_QUOTES) ?>" 
+  alt="Profile" 
+  class="nav-profile-pic" 
+  onerror="this.onerror=null;this.src='uploads/default.jpeg';">
+
                                         <?php if (isset($row['last_active']) && strtotime($row['last_active']) > strtotime('-30 minutes')): ?>
                                             <div class="online-indicator" title="Online"></div>
                                         <?php endif; ?>

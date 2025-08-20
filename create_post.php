@@ -7,32 +7,37 @@ if (!isset($_SESSION['user_id'])) {
   exit;
 }
 
-$content = trim($_POST['content']);
-$user_id = $_SESSION['user_id'];
-$imagePath = null;
+// Only run this if the form was submitted
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-// Handle image upload
-if (!empty($_FILES['image']['name'])) {
-  $uploadDir = 'post_uploads/';
-  if (!is_dir($uploadDir)) mkdir($uploadDir);
+    $content = trim($_POST['content']);
+    $user_id = $_SESSION['user_id'];
+    $imagePath = null;
 
-  $filename = uniqid() . '_' . basename($_FILES['image']['name']);
-  $targetPath = $uploadDir . $filename;
+    // Handle image upload
+    if (!empty($_FILES['image']['name'])) {
+        $uploadDir = 'post_uploads/';
+        if (!is_dir($uploadDir)) mkdir($uploadDir);
 
-  if (move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {
-    $imagePath = $targetPath;
-  }
+        $filename = uniqid() . '_' . basename($_FILES['image']['name']);
+        $targetPath = $uploadDir . $filename;
+
+        if (move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {
+            $imagePath = $targetPath;
+        }
+    }
+
+    // Prepare and execute the insert
+    $stmt = $conn->prepare("INSERT INTO posts (user_id, content, image) VALUES (?, ?, ?)");
+    $stmt->bind_param("iss", $user_id, $content, $imagePath);
+    $stmt->execute();
+    $stmt->close();
+
+    header('Location: feed.php');
+    exit;
 }
-
-// Prepare and execute the insert
-$stmt = $conn->prepare("INSERT INTO posts (user_id, content, image) VALUES (?, ?, ?)");
-$stmt->bind_param("iss", $user_id, $content, $imagePath);
-$stmt->execute();
-$stmt->close();
-
-header('Location: feed.php');
-exit;
 ?>
+
 
 
 <!DOCTYPE html>

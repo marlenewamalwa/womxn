@@ -449,9 +449,10 @@ $stmt->close();
                     
                     </div>
                         <div>
-                             <a href="create_post.php" class="new-post-btn">
-               New Post
-            </a>
+                            <a href="create_post.php" class="postbtn">
+                                <i class="fas fa-plus"></i>
+                                Create New Post
+                            </a>
                         </div>
                     <?php if (!empty($posts)): ?>
                         <?php foreach ($posts as $post): ?>

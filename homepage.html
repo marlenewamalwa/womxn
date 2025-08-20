@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WOMXN</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <style>
+    /* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  background: #ffeef7;
+  color: #4a2040;
+}
+
+.container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 230px;
+  background: #fdd7e4;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.sidebar .logo {
+  font-size: 22px;
+  font-weight: 700;
+  background: linear-gradient(45deg, #ff6f91, #ff9671);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 20px;
+}
+
+.sidebar .profile {
+  text-align: center;
+}
+.sidebar .profile img {
+  width: 60px;
+  border-radius: 50%;
+}
+.sidebar .profile a {
+  display: block;
+  margin-top: 8px;
+  color: #7a2964;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.sidebar nav ul {
+  list-style: none;
+}
+.sidebar nav ul li {
+  padding: 12px;
+  margin: 5px 0;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.3s;
+}
+.sidebar nav ul li:hover,
+.sidebar nav ul li.active {
+  background: #ffb3c6;
+}
+
+/* Content */
+.content {
+  flex: 1;
+  padding: 20px;
+}
+
+/* Topbar */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+  position: relative;
+}
+.topbar input {
+  padding: 10px 40px 10px 15px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  outline: none;
+  width: 250px;
+}
+.search-icon {
+  position: absolute;
+  right: 30px;
+  font-size: 20px;
+  color: #ff6f91;
+}
+
+/* Hero */
+.hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff0f6;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  margin-bottom: 40px;
+}
+.hero-text {
+  max-width: 50%;
+}
+.hero h1 {
+  font-size: 30px;
+  margin-bottom: 15px;
+  color: #7a2964;
+}
+.hero p {
+  margin-bottom: 20px;
+  font-size: 15px;
+  line-height: 1.6;
+}
+.hero .buttons {
+  display: flex;
+  gap: 15px;
+}
+.hero-img img {
+  max-width: 100%;
+  border-radius: 15px;
+}
+
+/* Buttons */
+.btn {
+  padding: 12px 20px;
+  border-radius: 25px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: 0.3s;
+}
+.btn.primary {
+  background: #ff6f91;
+  color: #fff;
+}
+.btn.primary:hover {
+  background: #e85b80;
+}
+.btn.outline {
+  border: 2px solid #ff6f91;
+  color: #ff6f91;
+}
+.btn.outline:hover {
+  background: #ff6f91;
+  color: #fff;
+}
+
+/* About */
+.about {
+  text-align: center;
+  padding: 30px 0;
+  max-width: 800px;
+  margin: auto;
+}
+.about h2 {
+  font-size: 24px;
+  color: #7a2964;
+  margin-bottom: 15px;
+}
+.about p {
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* Events */
+.featured-events {
+  margin-top: 40px;
+}
+.featured-events h2 {
+  font-size: 22px;
+  margin-bottom: 20px;
+  color: #7a2964;
+}
+.event-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+.event-card {
+  background: #fff;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  transition: transform 0.3s;
+}
+.event-card:hover {
+  transform: translateY(-5px);
+}
+.event-card img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+}
+.event-card h3 {
+  padding: 15px;
+  font-size: 18px;
+  color: #7a2964;
+}
+.event-card p {
+  padding: 0 15px 15px;
+  font-size: 14px;
+}
+
+/* Testimonials */
+.testimonials {
+  margin-top: 50px;
+  text-align: center;
+}
+.testimonials h2 {
+  margin-bottom: 20px;
+  color: #7a2964;
+}
+.testi-cards {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.testi {
+  background: #fff0f6;
+  padding: 20px;
+  border-radius: 15px;
+  max-width: 300px;
+}
+.testi img {
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+.testi p {
+  font-size: 14px;
+  margin-bottom: 10px;
+  font-style: italic;
+}
+.testi h4 {
+  color: #4a2040;
+  font-weight: 600;
+}
+
+/* Footer */
+.footer {
+  margin-top: 50px;
+  text-align: center;
+  padding: 20px;
+  border-top: 1px solid #ddd;
+  font-size: 14px;
+}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <h2 class="logo">WOMXN</h2>
+      <div class="profile">
+        <img src="https://source.unsplash.com/80x80/?portrait,woman" alt="profile">
+        <a href="login.php">Login</a>
+      </div>
+      <nav>
+        <ul>
+          <li class="active"><i class='bx bx-home'></i> Home</li>
+          <li><i class='bx bx-news'></i> Feed</li>
+          <li><i class='bx bx-group'></i> Community</li>
+          <li><i class='bx bx-calendar'></i> Events</li>
+          <li><i class='bx bx-briefcase'></i> Opportunities</li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="content">
+      <!-- Top bar -->
+      <header class="topbar">
+        <input type="text" placeholder="Search keywords...">
+        <i class='bx bx-search search-icon'></i>
+      </header>
+
+      <!-- Hero Section -->
+      <section class="hero">
+        <div class="hero-text">
+          <h1>Be Part of the Movement <span>💕</span></h1>
+          <p>We're building something powerful together. Join our community to connect, share, and grow 
+            with fellow WOMXN and queer individuals across Kenya and beyond.</p>
+          <div class="buttons">
+            <a href="#" class="btn primary">Join the Community</a>
+            <a href="#" class="btn outline">Learn More</a>
+          </div>
+        </div>
+        <div class="hero-img">
+          <img src="https://source.unsplash.com/500x350/?women,community" alt="community">
+        </div>
+      </section>
+
+      <!-- About Section -->
+      <section class="about">
+        <h2>About WOMXN</h2>
+        <p>WOMXN is a safe, inclusive, and empowering space for queer individuals to thrive. 
+           We focus on building connections, amplifying voices, and creating opportunities for growth and solidarity.</p>
+      </section>
+
+      <!-- Featured Events -->
+      <section class="featured-events">
+        <h2>Featured Events</h2>
+        <div class="event-cards">
+          <div class="event-card">
+            <img src="https://source.unsplash.com/400x250/?event,people" alt="Event">
+            <h3>Pride Meet-Up</h3>
+            <p>Celebrate love, identity, and solidarity in Nairobi.</p>
+          </div>
+          <div class="event-card">
+            <img src="https://source.unsplash.com/400x250/?conference,diversity" alt="Event">
+            <h3>Queer Tech Forum</h3>
+            <p>Bringing together queer innovators and leaders in tech.</p>
+          </div>
+          <div class="event-card">
+            <img src="https://source.unsplash.com/400x250/?workshop,women" alt="Event">
+            <h3>Skill-Building Workshop</h3>
+            <p>Learn new skills, share knowledge, and grow together.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Testimonials -->
+      <section class="testimonials">
+        <h2>Community Voices</h2>
+        <div class="testi-cards">
+          <div class="testi">
+            <img src="https://source.unsplash.com/80x80/?portrait,woman,smile" alt="member">
+            <p>“WOMXN gave me a safe space to connect and feel truly seen.”</p>
+            <h4>- Achieng, Nairobi</h4>
+          </div>
+          <div class="testi">
+            <img src="https://source.unsplash.com/80x80/?portrait,lgbtq" alt="member">
+            <p>“The events are life-changing — I’ve met lifelong friends here.”</p>
+            <h4>- Zawadi, Kisumu</h4>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <p>© 2025 WOMXN Community | Built with ❤️ in Kenya</p>
+      </footer>
+
+    </main>
+  </div>
+</body>
+</html>

@@ -8,16 +8,6 @@
   position: fixed;
 }
 
-.gradient-text {
-  font-weight: bold;
-  font-size: 45px;
-  background:  linear-gradient(180deg, #D62E00 0%, #FF9A56 25%, #FFFFFF 50%, #D362A4 75%, #9A0036 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;  /* Text shows only gradient */
-  -webkit-text-fill-color: transparent; /* Needed for Safari */
-}
-
 
 .sidebar ul {
   list-style: none;
@@ -45,6 +35,7 @@
 .user-info {
   text-align: center;
   margin-bottom: 20px;
+  color: #872657;
 }
 
 .nav-profile-pic {
@@ -70,7 +61,8 @@
 }
 
 .username-link {
-  color: white;
+  color: #872657;
+  font-size: 1.2rem;
   text-decoration: none;
   margin-bottom: 0.3rem;
 }
@@ -83,10 +75,38 @@
 
 .logout-link,
 .login-link {
-  color: white;
+  color: #872657;
   font-size: 0.9rem;
   text-decoration: underline;
 }
 .sidebar ul li a.active {
   background-color: #872657;
+}
+.sidebar-toggle {
+    display: none;
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    background: #872657;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    z-index: 1000;
+}
+
+@media (max-width: 768px) {
+    .sidebar-toggle {
+        display: block;
+    }
+    .sidebar.active {
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 240px;
+        background: #fff;
+        box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+        z-index: 999;
+    }
 }

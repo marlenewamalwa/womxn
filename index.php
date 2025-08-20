@@ -91,7 +91,7 @@ if (isset($_GET['q']) && !empty($_GET['q'])) {
   --text-dark: #1a1a1a;
   --text-gray: #6b7280;
   --bg-light: #fef7ff;
-  --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.06);
+  --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.08);     
   --shadow-medium: 0 8px 30px rgba(0, 0, 0, 0.12);
   --border-radius: 16px;
 }
@@ -117,14 +117,7 @@ main {
   min-height: 100vh;
 }
 
-/* Topbar */
-.topbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.5rem 0;
-    margin-bottom: 2rem;
-}
+
 
 .logo {
     font-family: 'Space Grotesk', sans-serif;
@@ -133,52 +126,46 @@ main {
     color: var(--lesbian-dark-pink);
 }
 
-/* Search bar */
-.search {
-    display: flex;
-    align-items: center;
-    background: white;
-    border-radius: 50px;
-    padding: 0.5rem;
-    box-shadow: var(--shadow-soft);
-    border: 2px solid transparent;
-    transition: all 0.3s ease;
+.topbar {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  background: #fde6ef; /* soft pink background */
+  margin-bottom: 20px;
 }
 
-.search:focus-within {
-    border-color: var(--lesbian-light-pink);
-    box-shadow: 0 0 0 4px rgba(212, 98, 166, 0.1);
+
+
+.search input[type="text"] {
+  border: 2px solid #b03a6f; /* pink border */
+    border-radius: 25px;
+  padding: 12px 18px;
+  font-size: 16px;
+  outline: none;
+  width: 300px;
+  transition: all 0.3s ease;
 }
 
-.search input {
-    border: none;
-    outline: none;
-    padding: 0.75rem 1.25rem;
-    border-radius: 50px;
-    width: 280px;
-    font-size: 0.95rem;
-    font-weight: 400;
+.search input[type="text"]:focus {
+  border-color: #a0185c;
+  box-shadow: 0 0 6px rgba(160, 24, 92, 0.4);
 }
 
 .search-btn {
-    background: var(--lesbian-light-pink);
-    border: none;
+  padding: 12px 25px;
+    background: linear-gradient(135deg, #872657 0%, #b8336a 100%);
     color: white;
-    font-size: 1rem;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
+    border: none;
+    border-radius: 25px;
+    margin-left: 10px;
     cursor: pointer;
-    margin-left: 0.3rem;
+    font-weight: 600;
     transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    white-space: nowrap;
 }
 
 .search-btn:hover {
-    background: var(--lesbian-dark-pink);
-    transform: translateY(-1px);
+  background: #8d2a59;
 }
 
 /* Search results */
@@ -517,8 +504,8 @@ main {
 
 .post-image {
     width: 100%;
-    max-width: 300px;
-    height: 300px;
+    max-width: 500px;
+    height: auto;
     margin: 1rem 0;
     border-radius: 16px;
     box-shadow: var(--shadow-soft);
@@ -748,10 +735,10 @@ footer a:hover {
     <main>
       <!-- Topbar with search -->
       <div class="topbar">
-     
+        
         <form class="search" method="GET" action="">
             <input type="text" name="q" placeholder="Search the community..." value="<?php echo isset($_GET['q']) ? htmlspecialchars($_GET['q']) : ''; ?>">
-            <button class="search-btn" type="submit">🔍</button>
+            <button class="search-btn" type="submit">🔍 Search</button>
         </form>
       </div>
 

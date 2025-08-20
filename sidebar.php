@@ -7,9 +7,10 @@ $defaultPic = 'uploads/default.jpeg';
 $pic = $isLoggedIn && !empty($_SESSION['profile_pic']) ? $_SESSION['profile_pic'] : $defaultPic;
 ?>
 
-<nav class="sidebar">
-  <h1 class="gradient-text">WOMXN</h1>
+<nav class="sidebar" id="sidebar">
+  <button class="sidebar-toggle">☰</button>
 
+  
   <div class="user-info">
     <img src="<?= htmlspecialchars($pic) ?>" alt="Profile" class="nav-profile-pic">
     <?php if ($isLoggedIn): ?>
@@ -29,4 +30,15 @@ $pic = $isLoggedIn && !empty($_SESSION['profile_pic']) ? $_SESSION['profile_pic'
     <li><a href="events.php">Events</a></li>
     <li><a href="exchange.php">Opportunities</a></li>
   </ul>
+  <script>
+const toggleBtn = document.querySelector('.sidebar-toggle');
+const sidebar = document.querySelector('.sidebar');
+
+toggleBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('active');
+});
+
+
+</script>
 </nav>
+
