@@ -99,6 +99,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
       <button type="submit">Log In</button>
     <p>Don't have an account? <a href="signup.php">Register here</a></p>
+    <!-- Load Google Identity Services -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+
+<div id="g_id_onload"
+     data-client_id="422877465316-q4ops1t2mmnovk0slcpfprgdso5gbp0s.apps.googleusercontent.com"
+     data-login_uri="http://localhost/womxn/google-callback.php"
+     data-auto_prompt="false">
+</div>
+
+<div class="g_id_signin"
+     data-type="standard"
+     data-shape="rectangular"
+     data-theme="outline"
+     data-text="signin_with"
+     data-size="large">
+</div>
+    <p>Or log in with Google:</p>
     </form>
   </div>
 </body>
