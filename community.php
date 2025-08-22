@@ -58,29 +58,39 @@ function timeAgo($datetime) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WOMXN Community - Connect & Grow Together</title>
     <link rel="stylesheet" href="styles.css">
+      <link href="https://fonts.googleapis.com/css2?family=Macondo&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+                 /* Global styles */
+                 /* Global styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            display: flex;
-            background-color: #ffe6f0;
-            color: #2b2b2b;
-        }
+body {
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  background-color: #ffffffff;
+  color: #2b2b2b;
+}
 
-        .container {
-            display: flex;
-            width: 100%;
-            min-height: 100vh;
-        }
+.container {
+  display: flex;
+  width: 100%;
+}
 
+/* Main content */
+main {
+  margin-left: 240px;
+  padding: 2rem;
+  flex: 1;
+  min-height: 100vh;
+  margin-top: 60px;  /* space for topbar */
+}
         .community-container {
             margin-left: 240px;
             padding: 2rem;
@@ -88,74 +98,14 @@ function timeAgo($datetime) {
             max-width: calc(100% - 240px);
         }
 
-        .search-section {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            margin-bottom: 2rem;
-        }
-
-        .search-bar {
-            display: flex;
-            justify-content: center;
-            position: relative;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
-        .search-bar input {
-            padding: 12px 20px 12px 50px;
-            width: 100%;
-            border: 2px solid #e1e5e9;
-            border-radius: 25px;
-            outline: none;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            background: #f8f9fa;
-        }
-
-        .search-bar input:focus {
-            border-color: #872657;
-            background: white;
-            box-shadow: 0 0 0 3px rgba(135, 38, 87, 0.1);
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 18px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #6c757d;
-            z-index: 1;
-        }
-
-        .search-bar button {
-            padding: 12px 25px;
-            background: linear-gradient(135deg, #872657 0%, #b8336a 100%);
-            color: white;
-            border: none;
-            border-radius: 25px;
-            margin-left: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-        }
-
-        .search-bar button:hover {
-            background: linear-gradient(135deg, #68212f 0%, #9a2a5a 100%);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(135, 38, 87, 0.3);
-        }
-
-        
+          
 
         .results-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1.5rem;
+            margin-top: 55px;
             flex-wrap: wrap;
             gap: 1rem;
         }
@@ -395,23 +345,14 @@ function timeAgo($datetime) {
 <body>
     <div class="container">
         <!-- Sidebar -->
-        <?php include 'sidebar.php'; ?>    
+        <?php include 'sidebar.php'; ?> 
+        <?php include 'topbar.php'; ?>   
 
         <!-- Main content -->
         <div class="community-container">
             <!-- Header Section -->
             
-            <!-- Search Section -->
-            <div class="search-section">
-                <form method="GET" action="" class="search-bar">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" name="q" placeholder="Search members ..." value="<?= htmlspecialchars($q) ?>">
-                    <button type="submit">
-                        <i class="fas fa-search"></i> Search
-                    </button>
-                </form>
-                
-                         </div>
+            
 
             <!-- Results Header -->
             <div class="results-header">

@@ -18,7 +18,7 @@
   left: 200px; /* matches sidebar width */
   right: 0;
   height: 60px;
-  background: #fff;
+  background: #ffe6f0;
   border-bottom: 1px solid #eee;
   display: flex;
   align-items: center;
@@ -35,7 +35,7 @@
   left: 1rem;
   background: #872657;
   color: white;
-  padding: 0.5rem 1rem;
+  padding: 0.3rem 0.3rem;
   border-radius: 8px;
   z-index: 1000; /* above everything */
   cursor: pointer;
@@ -97,6 +97,17 @@
 .sidebar ul li a.active {
   background-color: #fff;
 }
+
+.sidebar h1 {
+  font-family:  macondo, sans-serif;
+  font-size: 2rem;
+  text-align: center;
+  margin: 20px 0;
+  color: #872657;
+  letter-spacing: 1.5px;
+}
+
+
 
 /* Topbar Logo */
 .topbar .logo {
@@ -246,3 +257,4 @@
     letter-spacing: 0.5px;
   }
 }
+

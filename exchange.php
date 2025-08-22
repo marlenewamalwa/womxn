@@ -11,11 +11,7 @@ $user_id = $_SESSION['user_id'];
 
 $where = "WHERE status='open' AND type != 'job'";
 
-// If search keyword exists
-if (!empty($_GET['search'])) {
-    $search = mysqli_real_escape_string($conn, $_GET['search']);
-    $where .= " AND (title LIKE '%$search%' OR description LIKE '%$search%')";
-}
+
 
 // If type filter exists
 if (!empty($_GET['type'])) {
@@ -36,7 +32,8 @@ $result = mysqli_query($conn, $sql);
 <head>
     <title>Skill & Job Exchange</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300 400 700 800&display=swap" rel="stylesheet" />
+   <link href="https://fonts.googleapis.com/css2?family=Macondo&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
                  /* Global styles */
 * {
@@ -48,7 +45,7 @@ $result = mysqli_query($conn, $sql);
 body {
   font-family: 'Poppins', sans-serif;
   display: flex;
-  background-color: #ffe6f0;
+  background-color: #ffffffff;
   color: #2b2b2b;
 }
 
@@ -62,6 +59,8 @@ main {
   margin-left: 240px;
   padding: 2rem;
   flex: 1;
+  min-height: 100vh;
+  margin-top: 60px;  /* space for topbar */
 }
         .listing-container {
     display: grid;
@@ -95,7 +94,7 @@ main {
             border-radius: 4px; }
 
         .btn:hover { background: #b0276e; }
-        .topbar { margin-bottom: 20px; }
+        .hero { margin-bottom: 20px; }
         /* Filter & Search Form Styling */
 form.filter-form {
     display: flex;
@@ -106,6 +105,7 @@ form.filter-form {
     border-radius: 10px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     margin-bottom: 20px;
+    width: 500px;
 }
 
 form.filter-form input,
@@ -151,23 +151,21 @@ form.filter-form button:hover {
 <div class="container">
     <!-- Sidebar Navigation -->
     <?php include 'sidebar.php'; ?>
-
+<?php include 'topbar.php'; ?>
     <!-- Main Content -->
     <main>
 
 <form method="GET" class="filter-form">
-    <input type="text" name="search" placeholder="Search title or description" 
-           value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
-
     <select name="type">
         <option value="">-- All Types --</option>
         <option value="skill_offer" <?php if(isset($_GET['type']) && $_GET['type']=='skill_offer') echo 'selected'; ?>>Skill Offer</option>
         <option value="skill_request" <?php if(isset($_GET['type']) && $_GET['type']=='skill_request') echo 'selected'; ?>>Skill Request</option>
     </select>
 
-    <input type="submit" value="Filter">
+    <button type="submit">Filter</button>
 </form>
-<div class="topbar">
+
+<div class="hero">
        <?php if (isset($_SESSION['user_id'])): ?>
         <a class="btn" href="post_exchange.php">Post New Listing</a>
     <?php else: ?>

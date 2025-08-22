@@ -7,8 +7,8 @@ $defaultPic = 'uploads/default.jpeg';
 $pic = $isLoggedIn && !empty($_SESSION['profile_pic']) ? $_SESSION['profile_pic'] : $defaultPic;
 ?>
 <!-- sidebar.php -->
-  
-<!-- Burger Toggle -->
+
+    <!-- Burger Toggle -->
 <button class="sidebar-toggle">☰</button>
 
 <!-- Sidebar -->
@@ -22,6 +22,11 @@ toggleBtn.addEventListener('click', () => {
     sidebar.classList.toggle('active');
 });
 </script>
+
+<h1 class="sidebar-logo">
+  <span>LAVENDER</span>
+</h1>
+
   <div class="user-info">
     <img src="<?= htmlspecialchars($pic) ?>" alt="Profile" class="nav-profile-pic">
     <?php if ($isLoggedIn): ?>

@@ -74,7 +74,8 @@ if (isset($_GET['q']) && !empty($_GET['q'])) {
   <title>WOMXN | Queer Platform</title>
   <link rel="stylesheet" href="styles.css">
   <link href="https://fonts.googleapis.com/css2?family=Macondo&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
   <style>
     /* Global styles with lesbian flag colors */
 * {
@@ -104,9 +105,9 @@ if (isset($_GET['q']) && !empty($_GET['q'])) {
 }
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: 'poppins', sans-serif;
   display: flex;
-  background: var(--lesbian-white);
+  background: #ffffff;
   color: var(--text-dark);
   line-height: 1.6;
 }
@@ -124,24 +125,6 @@ main {
   min-height: 100vh;
   margin-top: 60px;  /* space for topbar */
 }
-
-
-
-.logo {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--lesbian-dark-pink);
-}
-
-.topbar {
-  display: flex;
-  justify-content: center;
-  padding: 20px;
-  background: #fde6ef; /* soft pink background */
-  margin-bottom: 20px;
-}
-
 
 
 .search input[type="text"] {
@@ -335,6 +318,130 @@ main {
   text-decoration: none;
 }
 
+.latest-posts {
+  padding: 3rem 1rem;
+  background: #fafafa;
+}
+
+.latest-posts h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #d63384;
+}
+
+.no-posts {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+.posts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.post-card {
+  background: #fff;
+  padding: 1.2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.8rem;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.post-image {
+  margin-top: 0.8rem;
+  border-radius: 10px;
+  width: 100%;
+  max-height: 250px;
+  object-fit: cover;
+}
+
+.view-more {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.btn {
+  display: inline-block;
+  background: #d63384;
+  color: #fff;
+  padding: 0.7rem 1.3rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+
+.btn:hover {
+  background: #a62265;
+}
+
+/* Responsive grid */
+@media (max-width: 900px) {
+  .posts-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .posts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.comments {
+  margin-top: 1rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid #eee;
+}
+
+.comments h4 {
+  font-size: 1rem;
+  margin-bottom: 0.6rem;
+  color: #d63384;
+}
+
+.comment {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin-bottom: 0.8rem;
+}
+
+.comment-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.comment p {
+  margin: 0.2rem 0;
+}
+
+.no-comments {
+  font-size: 0.9rem;
+  color: #777;
+}
+
 
 /* Latest Events */
 .latest-events {
@@ -399,81 +506,75 @@ main {
   margin-top: 0.5rem;
   color: var    
 }
-/* Latest Posts */
-.latest-posts {
-    background: white;
-    padding: 3rem;
-    border-radius: 24px;
-    box-shadow: var(--shadow-soft);
-    margin-bottom: 4rem;
+/* Opportunities Section */
+.opportunities {
+  padding: 3rem 1rem;
+
 }
 
-.latest-posts h2 {
-    font-family: 'Space Grotesk', sans-serif;
+.opportunity-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  max-width: 1100px;
+  margin: 0 auto;
+  gap: 2rem;
+}
+
+.opportunity-image {
+  flex: 1 1 45%;
+}
+
+.opportunity-image img {
+  width: 100%;
+  border-radius: 100px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+}
+
+.opportunity-text {
+  flex: 1 1 45%;
+}
+
+.opportunity-text h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #872657; /* WOMXN pink */
+}
+
+.opportunity-text p {
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 1.5rem;
+}
+
+.btn {
+  display: inline-block;
+  background: #872657;
+  color: #fff;
+  padding: 0.7rem 1.5rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+
+.btn:hover {
+  background: #a62265;
+}
+
+/* Mobile stacking */
+@media (max-width: 768px) {
+  .opportunity-container {
+    flex-direction: column;
     text-align: center;
-    margin-bottom: 3rem;
-    color: var(--lesbian-dark-pink);
-    font-size: 2.2rem;
-    font-weight: 700;
+  }
+
+  .opportunity-text {
+    padding: 0 1rem;
+  }
 }
 
-.post {
- 
-  gap: 1.5rem;
-  margin-top: 1rem;
-    
-}
-
-.post:last-child {
-    border-bottom: none;
-}
-
-.post:hover {
-    background: var(--bg-light);
-    border-radius: 16px;
-    padding: 2rem 1.5rem;
-    margin: 0 -1.5rem;
-}
-
-.post-header {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
-}
-
-.avatar {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    border: 3px solid var(--lesbian-light-pink);
-    object-fit: cover;
-}
-
-.post-header strong {
-    color: var(--lesbian-dark-pink);
-    font-weight: 600;
-}
-
-.post p {
-    color: var(--text-dark);
-    margin-bottom: 1rem;
-    font-size: 1.05rem;
-}
-
-.post-image {
-    width: 100%;
-    max-width: 500px;
-    height: 500px;
-    margin: 1rem 0;
-    border-radius: 16px;
-    box-shadow: var(--shadow-soft);
-}
-
-.post small {
-    color: var(--text-gray);
-    font-size: 0.9rem;
-}
 
 /* Newsletter */
 .newsletter {
@@ -505,7 +606,7 @@ main {
 }
 
 .newsletter h2 {
-    font-family: 'Space Grotesk', sans-serif;
+    
     margin-bottom: 1rem;
     font-size: 2.2rem;
 }
@@ -559,7 +660,7 @@ main {
     width: 100%;
     height: 300px;
     object-fit: cover;
-    border-radius: 20px;
+    border-radius: 50%;
     box-shadow: var(--shadow-soft);
     margin: 2rem 0;
 }
@@ -683,6 +784,7 @@ footer a:hover {
     outline: 2px solid var(--lesbian-orange);
     outline-offset: 4px;
 }
+
 </style>
 </head>
 <body>
@@ -697,7 +799,6 @@ footer a:hover {
 <section class="hero">
   <div class="hero-overlay">
     <div class="hero-content">
-      <h1> <span>LAVENDER</span></h1>
       <p>Connecting queer women in Kenya through community, events, and opportunities.</p>
       <div class="hero-ctas">
         <a href="community.php" class="cta-btn primary">Join the Community</a>
@@ -727,6 +828,40 @@ footer a:hover {
       <a href="exchange.php" class="cta-link">Get Started →</a>
     </div>
   </section>
+        <!-- Latest Posts -->
+
+<section class="latest-posts">
+  <h2> Latest Community Stories</h2>
+
+  <?php if (empty($latestPosts)): ?>
+      <div class="no-posts">
+          <p>No posts yet. Be the first to share your story! ✨</p>
+      </div>
+  <?php else: ?>
+      <div class="posts-grid">
+          <?php foreach ($latestPosts as $post): ?>
+              <div class="post-card">
+                  <div class="post-header">
+                      <img src="<?= htmlspecialchars($post['profile_pic']) ?>" alt="Profile" class="avatar">
+                      <strong><?= htmlspecialchars($post['name']) ?></strong>
+                  </div>
+
+                  <p><?= nl2br(htmlspecialchars($post['content'])) ?></p>
+
+                  <?php if (!empty($post['image'])): ?>
+                      <img src="<?= htmlspecialchars($post['image']) ?>" class="post-image" alt="Post Image">
+                  <?php endif; ?>
+
+                  <small><?= date("F j, Y, g:i a", strtotime($post['created_at'])) ?></small>
+              </div>
+          <?php endforeach; ?>
+      </div>
+  <?php endif; ?>
+
+  <div class="view-more">
+      <a href="feed.php" class="btn">View Full Feed</a>
+  </div>
+</section>
 
       <!-- Latest Events -->
       <section class="latest-events">
@@ -756,36 +891,25 @@ footer a:hover {
           <a href="events.php" class="btn">View All Events</a>
         </div>
       </section>
+    
+        <!-- opportunities -->            
+<section class="opportunities">
+  <div class="opportunity-container">
+    <!-- Image side -->
+    <div class="opportunity-image">
+      <img src="uploads/heads.jpg" alt="Opportunities at WOMXN">
+    </div>
 
-      <!-- Latest Posts -->
-      <section class="latest-posts">
-        <h2>💫 Latest Community Stories</h2>
-               <?php if (empty($latestPosts)): ?>
-            <div style="text-align: center; padding: 2rem; color: var(--text-gray);">
-                <p>No posts yet. Be the first to share your story! ✨</p>
-            </div>
-        <?php else: ?>
-            <?php foreach ($latestPosts as $post): ?>
-                <div class="post">
-                    <div class="post-header">
-                        <img src="<?= htmlspecialchars($post['profile_pic']) ?>" alt="Profile" class="avatar">
-                        <strong><?= htmlspecialchars($post['name']) ?></strong>
-                    </div>
-                    <p><?= nl2br(htmlspecialchars($post['content'])) ?></p>
-
-                    <?php if (!empty($post['image'])): ?>
-                        <img src="<?= htmlspecialchars($post['image']) ?>" class="post-image" alt="Post Image">
-                    <?php endif; ?>
-
-                    <small><?= date("F j, Y, g:i a", strtotime($post['created_at'])) ?></small>
-                </div>
-            <?php endforeach; ?>
-        <?php endif; ?>
-
-        <div style="text-align: center; margin-top: 2rem;">
-          <a href="feed.php" class="btn">View Full Feed</a>
-        </div>
-      </section>
+    <!-- Text side -->
+    <div class="opportunity-text">
+      <h2> Opportunities for the Community</h2>
+      <p>
+        Discover events, workshops, and programs created to uplift queer women in Kenya.
+      </p>
+      <a href="opportunities.php" class="btn">Explore Opportunities</a>
+    </div>
+  </div>
+</section>
 
       <!-- Newsletter Signup -->
       <section class="newsletter">

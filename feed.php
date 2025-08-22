@@ -32,30 +32,7 @@ if ($result && $result->num_rows > 0) {
     }
 }
 
-if (isset($_GET['q'])) {
-    $q = trim($_GET['q']);
-    $q = mysqli_real_escape_string($conn, $q);
 
-    // Example: search in posts table
-    $sql = "SELECT * FROM posts 
-            WHERE content LIKE '%$q%' 
-          
-            ORDER BY created_at DESC";
-
-    $result = $conn->query($sql);
-
-    if ($result->num_rows > 0) {
-        echo "<h2>Search results for: " . htmlspecialchars($q) . "</h2>";
-        while ($row = $result->fetch_assoc()) {
-            echo "<div>";
-            echo "<h3>" . htmlspecialchars($row['content']) . "</h3>";
-            
-            echo "</div>";
-        }
-    } else {
-        echo "<p>No results found for <strong>" . htmlspecialchars($q) . "</strong>.</p>";
-    }
-}
 
 ?>
 <!DOCTYPE html>
@@ -65,6 +42,7 @@ if (isset($_GET['q'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WOMXN | Feed</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Macondo&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -89,36 +67,33 @@ if (isset($_GET['q'])) {
             --border-radius-lg: 16px;
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
+                 /* Global styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+body {
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  background-color: #ffffffff;
+  color: #2b2b2b;
+}
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, var(--bg-primary) 0%, #f8e8f0 100%);
-            color: var(--text-dark);
-            line-height: 1.6;
-            min-height: 100vh;
-        }
+.container {
+  display: flex;
+  width: 100%;
+}
 
-        .container {
-            display: flex;
-            width: 100%;
-            min-height: 100vh;
-        }
-
-        /* Main Content Area */
-        main {
-            margin-left: 340px;
-            padding: 2rem;
-            flex: 1;
-            max-width: 800px;
-            margin-right: auto;
-            animation: fadeInUp 0.6s ease-out;
-        }
+/* Main content */
+main {
+  margin-left: 240px;
+  padding: 2rem;
+  flex: 1;
+  min-height: 100vh;
+  margin-top: 60px;  /* space for topbar */
+}
 
         @keyframes fadeInUp {
             from {
@@ -129,117 +104,6 @@ if (isset($_GET['q'])) {
                 opacity: 1;
                 transform: translateY(0);
             }
-        }
-
-        /* Search Section */
-        .search-section {
-            background: var(--bg-card);
-            padding: 2rem;
-            border-radius: var(--border-radius-lg);
-            box-shadow: var(--shadow-md);
-            margin-bottom: 2rem;
-            border: 1px solid var(--border-light);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .search-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary-color), var(--accent-color), var(--primary-light));
-        }
-
-        .search-bar {
-            display: flex;
-            justify-content: center;
-            position: relative;
-            max-width: 600px;
-            margin: 0 auto;
-            gap: 12px;
-        }
-
-        .search-input-container {
-            flex: 1;
-            position: relative;
-        }
-
-        .search-bar input {
-            width: 100%;
-            padding: 16px 20px 16px 55px;
-            border: 2px solid var(--border-color);
-            border-radius: 30px;
-            outline: none;
-            font-size: 1rem;
-            font-weight: 400;
-            transition: var(--transition);
-            background: var(--bg-secondary);
-            color: var(--text-dark);
-        }
-
-        .search-bar input:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 4px rgba(135, 38, 87, 0.1);
-            transform: translateY(-1px);
-        }
-
-        .search-bar input::placeholder {
-            color: var(--text-light);
-            font-weight: 400;
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-            font-size: 1.1rem;
-            z-index: 1;
-        }
-
-        .search-bar button {
-            padding: 16px 32px;
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
-            color: white;
-            border: none;
-            border-radius: 30px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 1rem;
-            transition: var(--transition);
-            white-space: nowrap;
-            box-shadow: var(--shadow-sm);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .search-bar button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .search-bar button:hover::before {
-            left: 100%;
-        }
-
-        .search-bar button:hover {
-            background: linear-gradient(135deg, var(--primary-hover) 0%, #9a2a5a 100%);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .search-bar button:active {
-            transform: translateY(0);
         }
 
         /* Post Form */
@@ -589,22 +453,11 @@ if (isset($_GET['q'])) {
     <div class="container">
         <!-- Sidebar -->
         <?php include 'sidebar.php'; ?>
+        <?php include 'topbar.php'; ?>
 
         <!-- Main Content -->
         <main>
-            <!-- Search Section -->
-            <div class="search-section">
-                <form method="GET" action="" class="search-bar">
-                    <div class="search-input-container">
-                        <i class="fas fa-search search-icon"></i>
-                        <input type="text" name="q" placeholder="Search posts, topics, and more..." required>
-                    </div>
-                    <button type="submit">
-                        <i class="fas fa-search"></i> Search
-                    </button>
-                </form>
-            </div>
-
+            
             <?php if ($isLoggedIn): ?>
                 <div class="post-form">
                     <form action="create_post.php" method="POST" enctype="multipart/form-data">

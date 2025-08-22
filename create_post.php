@@ -6,105 +6,160 @@ if (!isset($_SESSION['user_id'])) {
   header('Location: login.php');
   exit;
 }
-
-// Only run this if the form was submitted
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    $content = trim($_POST['content']);
-    $user_id = $_SESSION['user_id'];
-    $imagePath = null;
-
-    // Handle image upload
-    if (!empty($_FILES['image']['name'])) {
-        $uploadDir = 'post_uploads/';
-        if (!is_dir($uploadDir)) mkdir($uploadDir);
-
-        $filename = uniqid() . '_' . basename($_FILES['image']['name']);
-        $targetPath = $uploadDir . $filename;
-
-        if (move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {
-            $imagePath = $targetPath;
-        }
-    }
-
-    // Prepare and execute the insert
-    $stmt = $conn->prepare("INSERT INTO posts (user_id, content, image) VALUES (?, ?, ?)");
-    $stmt->bind_param("iss", $user_id, $content, $imagePath);
-    $stmt->execute();
-    $stmt->close();
-
-    header('Location: feed.php');
-    exit;
-}
 ?>
 
-
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Create Post</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
   <style>
+    :root {
+      --primary-color: #d33b79;
+      --primary-light: #f06292;
+      --primary-hover: #b42e66;
+      --bg-card: #fff;
+      --border-radius: 10px;
+      --border-radius-lg: 12px;
+      --border-light: #eee;
+      --border-color: #ddd;
+      --text-light: #999;
+      --text-muted: #666;
+      --text-dark: #222;
+      --shadow-sm: 0 2px 5px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 10px rgba(0,0,0,0.08);
+      --shadow-lg: 0 6px 16px rgba(0,0,0,0.12);
+      --transition: all 0.2s ease;
+    }
+
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: #f3f3f3;
+      background: #f4f5f7;
       margin: 0;
-      padding: 0;
+      padding: 40px;
     }
 
-    .post-container {
-      max-width: 500px;
-      margin: 50px auto;
-      background: white;
-      padding: 25px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    /* Post Form */
+    .post-form {
+      background: var(--bg-card);
+      border-radius: var(--border-radius-lg);
+      padding: 2rem;
+      margin: 0 auto;
+      max-width: 600px;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border-light);
+      transition: var(--transition);
+      position: relative;
     }
 
-    .post-container h2 {
-      margin-bottom: 20px;
-      color: #333;
+    .post-form:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-2px);
     }
 
-    textarea {
+    .post-form textarea {
       width: 100%;
-      height: 100px;
-      padding: 12px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 15px;
+      padding: 16px;
+      border: 2px solid var(--border-color);
+      border-radius: var(--border-radius);
+      outline: none;
+      font-size: 1rem;
+      font-family: inherit;
       resize: vertical;
-      margin-bottom: 15px;
+      min-height: 120px;
+      transition: var(--transition);
+      background: #fafbfc;
     }
 
-    input[type="file"] {
-      margin-bottom: 15px;
+    .post-form textarea:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(211,59,121,0.15);
+      background: white;
     }
 
-    button {
-      padding: 12px 20px;
-      background: #d33b79;
+    .post-form textarea::placeholder {
+      color: var(--text-light);
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1rem;
+      gap: 1rem;
+    }
+
+    .file-input-container {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .post-form input[type="file"] {
+      display: none;
+    }
+
+    .file-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: var(--border-light);
+      color: var(--text-muted);
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 0.9rem;
+    }
+
+    .file-label:hover {
+      background: var(--border-color);
+      color: var(--text-dark);
+    }
+
+    .post-form button[type="submit"] {
+      padding: 12px 24px;
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
       color: white;
       border: none;
-      border-radius: 8px;
+      border-radius: var(--border-radius);
       cursor: pointer;
-      font-size: 16px;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    button:hover {
-      background: #b42e66;
+    .post-form button[type="submit"]:hover {
+      background: linear-gradient(135deg, var(--primary-hover) 0%, #9a2a5a 100%);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
     }
   </style>
 </head>
 <body>
-  <div class="post-container">
-    <h2>Create a Post</h2>
-    <form action="create_post.php" method="POST" enctype="multipart/form-data">
-  <textarea name="content" placeholder="What's on your mind?" required></textarea><br>
-  <input type="file" name="image" accept="image/*"><br>
-  <button type="submit">Post</button>
-</form>
 
+  <div class="post-form">
+    <form action="create_post.php" method="POST" enctype="multipart/form-data">
+      <textarea name="content" placeholder="What's on your mind? Share your thoughts with the community..." required></textarea>
+      <div class="form-actions">
+        <div class="file-input-container">
+          <input type="file" name="image" accept="image/*" id="image-upload">
+          <label for="image-upload" class="file-label">
+            <i class="fas fa-image"></i> Add Photo
+          </label>
+        </div>
+        <button type="submit">
+          <i class="fas fa-paper-plane"></i> Share Post
+        </button>
+      </div>
+    </form>
   </div>
+
 </body>
 </html>

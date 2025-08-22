@@ -87,7 +87,13 @@ $stmt->close();
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700;800&display=swap" rel="stylesheet" />
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Poppins', sans-serif; display: flex; background-color: #fffafc; color: #2b2b2b; }
+        body {
+  font-family: 'poppins', sans-serif;
+  display: flex;
+  background: var(--lesbian-white);
+  color: var(--text-dark);
+  line-height: 1.6;
+}
         .container { display: flex; width: 100%; }
         main { margin-left: 240px; padding: 2rem; flex: 1; }
         h1 { text-align: center; color: #872657; }
