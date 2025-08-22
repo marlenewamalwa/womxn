@@ -300,7 +300,7 @@ main {
 }
 
 .card {
-  background: #fff;
+  background: #f8f0f4ff;
   margin: 0 auto;
   padding: 1.5rem;
   border-radius: 15px;
@@ -320,7 +320,9 @@ main {
 
 .latest-posts {
   padding: 3rem 1rem;
-  background: #fafafa;
+  background: #f8f0f4ff;
+  border-radius: 24px;
+  margin-bottom: 4rem;
 }
 
 .latest-posts h2 {
@@ -344,7 +346,7 @@ main {
 }
 
 .post-card {
-  background: #fff;
+  background: #f8f0f4ff;
   padding: 1.2rem;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.05);
@@ -453,7 +455,6 @@ main {
 }
 
 .latest-events h2 {
-    font-family: 'Space Grotesk', sans-serif;
     color: var(--lesbian-dark-pink);
     font-size: 2.2rem;
     text-align: center;
@@ -469,7 +470,7 @@ main {
 }
 
 .event-card {
-  background: #fff;
+  background: #f8f0f4ff;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 8px rgba(0,0,0,0.08);
@@ -802,7 +803,7 @@ footer a:hover {
       <p>Connecting queer women in Kenya through community, events, and opportunities.</p>
       <div class="hero-ctas">
         <a href="community.php" class="cta-btn primary">Join the Community</a>
-        <a href="aboutus.php" class="cta-btn secondary">Learn More</a>
+        <a href="about.php" class="cta-btn secondary">Learn More</a>
       </div>
     </div>
   </div>
@@ -906,7 +907,7 @@ footer a:hover {
       <p>
         Discover events, workshops, and programs created to uplift queer women in Kenya.
       </p>
-      <a href="opportunities.php" class="btn">Explore Opportunities</a>
+      <a href="exchange.php" class="btn">Explore Opportunities</a>
     </div>
   </div>
 </section>

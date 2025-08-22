@@ -61,8 +61,9 @@ $locationsRes = $conn->query("SELECT DISTINCT location FROM events ORDER BY loca
         .container { display:flex; width:100%; }
         main { margin-left:240px; padding:2rem; flex:1; margin-top:60px; }
         .btn { background:#872657; color:white; padding:10px 20px; border-radius:5px; text-decoration:none; }
-        .events-container { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:20px; margin-top:20px; }
-        .event-card { background:white; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); transition:0.3s; }
+        .events-container { display:grid; 
+            grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:20px; margin-top:20px; }
+        .event-card { background:#f8f0f4ff; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); transition:0.3s; }
         .event-card:hover { transform:scale(1.02); }
         .event-card img { width:100%; height:180px; object-fit:cover; border-top-left-radius:8px; border-top-right-radius:8px; }
         .event-info { padding:15px; }

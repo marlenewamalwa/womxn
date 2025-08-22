@@ -31,8 +31,9 @@ $result = mysqli_query($conn, $sql);
 <html>
 <head>
     <title>Skill & Job Exchange</title>
-    <link rel="stylesheet" href="styles.css">
-   <link href="https://fonts.googleapis.com/css2?family=Macondo&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Macondo&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
                  /* Global styles */
@@ -69,7 +70,7 @@ main {
 }
 .listing { 
             border: 1px solid #ddd; 
-            background: #fff;
+            background: #f8f0f4ff;
              padding: 15px;
              margin-top: 15px;  
             margin-bottom: 15px; 

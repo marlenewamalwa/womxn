@@ -13,8 +13,12 @@ if (!isset($_SESSION['user_id'])) {
 <head>
   <meta charset="UTF-8">
   <title>Create Post</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>WOMXN | Queer Platform</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Macondo&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
       --primary-color: #d33b79;
@@ -34,13 +38,32 @@ if (!isset($_SESSION['user_id'])) {
       --transition: all 0.2s ease;
     }
 
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f4f5f7;
-      margin: 0;
-      padding: 40px;
-    }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
+body {
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  background-color: #ffffffff;
+  color: #2b2b2b;
+}
+
+.container {
+  display: flex;
+  width: 100%;
+}
+
+/* Main content */
+main {
+  margin-left: 240px;
+  padding: 2rem;
+  flex: 1;
+  min-height: 100vh;
+  margin-top: 60px;  /* space for topbar */
+}
     /* Post Form */
     .post-form {
       background: var(--bg-card);
@@ -143,7 +166,13 @@ if (!isset($_SESSION['user_id'])) {
   </style>
 </head>
 <body>
-
+<div class="container">
+    <!-- Sidebar Navigation -->
+    <?php include 'sidebar.php'; ?>
+<?php include 'topbar.php'; ?>
+    <!-- Main Content -->
+    <main>
+      
   <div class="post-form">
     <form action="create_post.php" method="POST" enctype="multipart/form-data">
       <textarea name="content" placeholder="What's on your mind? Share your thoughts with the community..." required></textarea>
@@ -160,6 +189,7 @@ if (!isset($_SESSION['user_id'])) {
       </div>
     </form>
   </div>
-
+    </main>
+</div>
 </body>
 </html>
