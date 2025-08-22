@@ -6,11 +6,22 @@ $isLoggedIn = isset($_SESSION['user_id']);
 $defaultPic = 'uploads/default.jpeg';
 $pic = $isLoggedIn && !empty($_SESSION['profile_pic']) ? $_SESSION['profile_pic'] : $defaultPic;
 ?>
-
-<nav class="sidebar" id="sidebar">
-  <button class="sidebar-toggle">☰</button>
-
+<!-- sidebar.php -->
   
+<!-- Burger Toggle -->
+<button class="sidebar-toggle">☰</button>
+
+<!-- Sidebar -->
+<nav class="sidebar" id="sidebar">
+  
+<script>
+const toggleBtn = document.querySelector('.sidebar-toggle');
+const sidebar = document.querySelector('.sidebar');
+
+toggleBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('active');
+});
+</script>
   <div class="user-info">
     <img src="<?= htmlspecialchars($pic) ?>" alt="Profile" class="nav-profile-pic">
     <?php if ($isLoggedIn): ?>
@@ -30,15 +41,7 @@ $pic = $isLoggedIn && !empty($_SESSION['profile_pic']) ? $_SESSION['profile_pic'
     <li><a href="events.php">Events</a></li>
     <li><a href="exchange.php">Opportunities</a></li>
   </ul>
-  <script>
-const toggleBtn = document.querySelector('.sidebar-toggle');
-const sidebar = document.querySelector('.sidebar');
-
-toggleBtn.addEventListener('click', () => {
-    sidebar.classList.toggle('active');
-});
-
-
-</script>
+  
 </nav>
+
 

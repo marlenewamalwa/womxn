@@ -108,17 +108,32 @@ $stmt->close();
             background-color: #ffe6f0;
             color: #2b2b2b;
         }
-        .container { display: flex; width: 100%; }
-        main { margin-left: 240px; padding: 2rem; flex: 1; }
+        .container { 
+             display: flex;
+             width: 100%; 
+            }
+        main { margin-left: 240px; 
+            padding: 2rem;
+             flex: 1; }
         .profile-page {
-            max-width: 700px; margin: 40px auto; background: white;
-            border-radius: 15px; padding: 30px;
+            max-width: 500px;
+              
+             background: white;
+            border-radius: 15px;
+            align-items: left;
+            padding: 30px;
             box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
         }
-        .profile-header { text-align: center; margin-bottom: 30px; }
+        .profile-header { text-align: center; 
+            margin-bottom: 30px; }
+
         .profile-pic {
-            width: 120px; height: 120px; border-radius: 50%;
-            object-fit: cover; border: 3px solid #872657; margin-bottom: 15px;
+            width: 120px;
+             height: 120px;
+              border-radius: 50%;
+            object-fit: cover; 
+            border: 3px solid #872657; 
+            margin-bottom: 15px;
         }
         .profile-header h1 { font-size: 1.8rem; margin: 5px 0; }
         .pronouns { color: #888; font-size: 0.95rem; }

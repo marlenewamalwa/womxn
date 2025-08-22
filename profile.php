@@ -417,10 +417,7 @@ $stmt->close();
                     </div>
                     <div class="profile-details">
                         <h1><?= htmlspecialchars($name) ?></h1>
-                        <div class="info-item">
-                            <i class="fas fa-envelope"></i>
-                            <span><?= htmlspecialchars($email) ?></span>
-                        </div>
+                       
                         <div class="info-item">
                             <i class="fas fa-user"></i>
                             <span><?= htmlspecialchars($pronouns) ?></span>

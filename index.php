@@ -73,6 +73,7 @@ if (isset($_GET['q']) && !empty($_GET['q'])) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>WOMXN | Queer Platform</title>
   <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Macondo&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     /* Global styles with lesbian flag colors */
@@ -80,6 +81,12 @@ if (isset($_GET['q']) && !empty($_GET['q'])) {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+/* On mobile: sidebar overlays, so main should be full width */
+@media (max-width: 768px) {
+  main {
+    margin-left: 0;
+  }
 }
 
 :root {
@@ -115,6 +122,7 @@ main {
   padding: 2rem;
   flex: 1;
   min-height: 100vh;
+  margin-top: 60px;  /* space for topbar */
 }
 
 
@@ -194,69 +202,76 @@ main {
     box-shadow: var(--shadow-medium);
 }
 
-/* Hero Section */
+/* Hero with background image */
 .hero {
-    background: white;
-    border-radius: 24px;
-    padding: 4rem;
-    margin-bottom: 4rem;
-    text-align: center;
-    box-shadow: var(--shadow-soft);
-    position: relative;
-    overflow: hidden;
+  background: url("uploads/paint.jpeg") no-repeat center center/cover;
+  position: relative;
+  border-radius: 24px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
 }
 
-.hero::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 6px;
-    background: linear-gradient(90deg, var(--lesbian-orange), var(--lesbian-light-orange), var(--lesbian-white), var(--lesbian-light-pink), var(--lesbian-dark-pink));
+.hero-overlay {
+  background: rgba(0, 0, 0, 0.5); /* dark overlay for readability */
+  width: 100%;
+   border-radius: 24px 24px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.hero-content {
+  max-width: 600px;
+  text-align: center;
 }
 
 .hero h1 {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 3.5rem;
-    font-weight: 800;
-    color: var(--text-dark);
-    margin-bottom: 1.5rem;
-    line-height: 1.2;
+  font-size: 3rem;
+  margin-bottom: 1rem;
 }
-
+.hero h1 span {
+  color:var(--lesbian-white);
+  font-family:  macondo, sans-serif;
+}
 .hero p {
-    font-size: 1.25rem;
-    color: var(--text-gray);
-    max-width: 600px;
-    margin: 0 auto 2rem;
+  margin: 1rem 0 2rem;
+  font-size: 1.2rem;
 }
 
-/* Call to Action */
-.cta {
-    background: white;
-    padding: 4rem;
-    border-radius: 24px;
-    text-align: center;
-    box-shadow: var(--shadow-soft);
-    margin-bottom: 4rem;
-    position: relative;
+.hero-ctas .cta-btn {
+    display: inline-block;
+    background-color: var(--lesbian-orange);
+    color: white;
+    padding: 1rem 2rem;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1rem;
+    margin: 0.5rem;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
 }
 
-.cta h2 {
-    font-family: 'Space Grotesk', sans-serif;
-    color: var(--lesbian-dark-pink);
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
+.btn:hover {
+    background-color: var(--lesbian-dark-pink);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(165, 0, 98, 0.3);
+}
+.hero-ctas .cta-btn.secondary {
+    background: transparent;
+    color: white;
+    border: 2px solid var(--lesbian-orange);
 }
 
-.cta p {
-    font-size: 1.1rem;
-    color: var(--text-gray);
-    margin-bottom: 2.5rem;
-    max-width: 500px;
-    margin-left: auto;
-    margin-right: auto;
+.cta-btn secondary:hover {
+    background: var(--lesbian-light-pink);
+    color: white;
+    border-color: var(--lesbian-light-pink);
 }
 
 /* Buttons */
@@ -293,82 +308,33 @@ main {
     border-color: var(--lesbian-light-pink);
 }
 
-/* Quick Navigation */
-.quick-nav {
-    margin-bottom: 4rem;
+/* Quick Links Cards */
+.quick-links {
+  padding: 3rem 2rem;
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 }
 
-.quick-nav h2 {
-    font-family: 'Space Grotesk', sans-serif;
-    text-align: center;
-    margin-bottom: 3rem;
-    color: var(--lesbian-dark-pink);
-    font-size: 2.2rem;
-    font-weight: 700;
+.card {
+  background: #fff;
+  margin: 0 auto;
+  padding: 1.5rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease;
+}
+.card:hover {
+  transform: translateY(-5px);
+}
+.cta-link {
+  display: inline-block;
+  margin-top: 1rem;
+  color: #c2185b;
+  font-weight: 500;
+  text-decoration: none;
 }
 
-.nav-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 2rem;
-}
-
-.nav-card {
-    background: white;
-    padding: 2.5rem;
-    border-radius: 20px;
-    text-align: center;
-    transition: all 0.4s ease;
-    text-decoration: none;
-    color: var(--text-dark);
-    box-shadow: var(--shadow-soft);
-    position: relative;
-    overflow: hidden;
-}
-
-.nav-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: var(--lesbian-orange);
-    transform: scaleX(0);
-    transition: transform 0.3s ease;
-}
-
-.nav-card:hover::before {
-    transform: scaleX(1);
-}
-
-.nav-card:hover {
-    transform: translateY(-8px);
-    box-shadow: var(--shadow-medium);
-}
-
-.nav-icon {
-    font-size: 3rem;
-    margin-bottom: 1.5rem;
-    filter: grayscale(0.3);
-    transition: filter 0.3s ease;
-}
-
-.nav-card:hover .nav-icon {
-    filter: grayscale(0);
-}
-
-.nav-card h3 {
-    color: var(--lesbian-dark-pink);
-    margin-bottom: 1rem;
-    font-size: 1.4rem;
-    font-weight: 600;
-}
-
-.nav-card p {
-    color: var(--text-gray);
-    font-size: 1rem;
-}
 
 /* Latest Events */
 .latest-events {
@@ -389,58 +355,50 @@ main {
 }
 
 .event-list {
-    display: grid;
-    gap: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
 }
 
 .event-card {
-    background: var(--bg-light);
-    display: flex;
-    gap: 2rem;
-    padding: 2rem;
-    border-radius: 20px;
-    align-items: flex-start;
-    transition: all 0.3s ease;
-    border: 2px solid transparent;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .event-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-medium);
-    border-color: var(--lesbian-light-orange);
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.12);
 }
 
 .event-card img {
-    width: 160px;
-    height: 160px;
-    object-fit: cover;
-    border-radius: 16px;
-    flex-shrink: 0;
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.event-details {
+  padding: 1rem;
 }
 
 .event-details h3 {
-    margin-top: 0;
-    color: var(--lesbian-dark-pink);
-    font-size: 1.3rem;
-    font-weight: 600;
-    margin-bottom: 0.75rem;
+  margin: 0 0 0.5rem;
+  color: #872657;
 }
 
 .event-details p {
-    color: var(--text-gray);
-    margin-bottom: 0.5rem;
+  margin: 0.3rem 0;
+  color: #444;
 }
-
+  
 .event-details a {
-    color: var(--lesbian-orange);
-    text-decoration: none;
-    font-weight: 500;
+  display: inline-block;
+  margin-top: 0.5rem;
+  color: var    
 }
-
-.event-details a:hover {
-    text-decoration: underline;
-}
-
 /* Latest Posts */
 .latest-posts {
     background: white;
@@ -460,9 +418,10 @@ main {
 }
 
 .post {
-    border-bottom: 2px solid var(--bg-light);
-    padding: 2rem 0;
-    transition: all 0.3s ease;
+ 
+  gap: 1.5rem;
+  margin-top: 1rem;
+    
 }
 
 .post:last-child {
@@ -505,7 +464,7 @@ main {
 .post-image {
     width: 100%;
     max-width: 500px;
-    height: auto;
+    height: 500px;
     margin: 1rem 0;
     border-radius: 16px;
     box-shadow: var(--shadow-soft);
@@ -535,7 +494,7 @@ main {
     left: -50%;
     width: 200%;
     height: 200%;
-    background: url('https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=60') center/cover;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.2), transparent 70%);
     opacity: 0.1;
     z-index: 0;
 }
@@ -730,92 +689,48 @@ footer a:hover {
   <div class="container">
     <!-- Sidebar Navigation -->
     <?php include 'sidebar.php'; ?>
+<?php include 'topbar.php'; ?>
 
     <!-- Main Content -->
     <main>
-      <!-- Topbar with search -->
-      <div class="topbar">
-        
-        <form class="search" method="GET" action="">
-            <input type="text" name="q" placeholder="Search the community..." value="<?php echo isset($_GET['q']) ? htmlspecialchars($_GET['q']) : ''; ?>">
-            <button class="search-btn" type="submit">🔍 Search</button>
-        </form>
+           <!-- Hero Section -->
+<section class="hero">
+  <div class="hero-overlay">
+    <div class="hero-content">
+      <h1> <span>LAVENDER</span></h1>
+      <p>Connecting queer women in Kenya through community, events, and opportunities.</p>
+      <div class="hero-ctas">
+        <a href="community.php" class="cta-btn primary">Join the Community</a>
+        <a href="aboutus.php" class="cta-btn secondary">Learn More</a>
       </div>
+    </div>
+  </div>
+</section>
 
-      <!-- Dynamic Search Results -->
-      <div class="results">
-          <?php if (!empty($searchResults)) : ?>
-              <ul>
-                  <?php foreach ($searchResults as $result) : ?>
-                      <li><?php echo htmlspecialchars($result); ?></li>
-                  <?php endforeach; ?>
-              </ul>
-          <?php elseif (isset($_GET['q'])): ?>
-              <p style="text-align: center; color: var(--text-gray); font-style: italic;">No results found for "<?php echo htmlspecialchars($_GET['q']); ?>"</p>
-          <?php endif; ?>
-      </div>
 
-      <!-- Hero Section -->
-      <section class="hero">
-        <h1>Welcome to WOMXN</h1>
-        <p>A vibrant community celebrating queer women, non-binary folks, and allies. Connect, share stories, and build lasting friendships in a safe, supportive space.</p>
-        <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Diverse group of women celebrating" class="featured-image">
-      </section>
-
-      <!-- Community Stats -->
-      <div class="community-stats">
-        <div class="stat-card">
-          <span class="stat-number"><?php echo $userCount; ?>+</span>
-          <div class="stat-label">Community Members</div>
-        </div>
-        <div class="stat-card">
-          <span class="stat-number"><?php echo $postCount; ?>+</span>
-          <div class="stat-label">Stories Shared</div>
-        </div>
-        <div class="stat-card">
-          <span class="stat-number"><?php echo $eventCount; ?>+</span>
-          <div class="stat-label">Events Hosted</div>
-        </div>
-      </div>
-
-      <!-- Call to Action -->
-      <section class="cta">
-        <h2>Be Part of the Movement 💕</h2>
-        <p>Join thousands of amazing queer women and allies building connections, sharing experiences, and creating positive change across Kenya and beyond.</p>
-        <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Women supporting each other" class="featured-image">
-        <div>
-          <a href="signup.php" class="btn">Join the Community</a>
-          <a href="about.php" class="btn btn-secondary">Learn More</a>
-        </div>
-      </section>
-
-      <!-- Quick Navigation -->
-      <section class="quick-nav">
-        <h2>Quick Access</h2>
-        <div class="nav-grid">
-          <a href="feed.php" class="nav-card">
-            <div class="nav-icon">💬</div>
-            <h3>Community Feed</h3>
-            <p>Join conversations, share your authentic self, and connect with like-minded individuals</p>
-          </a>
-          <a href="events.php" class="nav-card">
-            <div class="nav-icon">📅</div>
-            <h3>Events & Meetups</h3>
-            <p>Discover local gatherings, workshops, pride celebrations, and community activities</p>
-          </a>
-          <a href="#resources" class="nav-card">
-            <div class="nav-icon">🌈</div>
-            <h3>Opportunities</h3>
-            <p>Find job opportunities, collaborations, and partnerships within our community</p>
-          </a>
-        </div>
-      </section>
+  <!-- Quick Links / Cards -->
+  <section class="quick-links">
+   
+    <div class="card">
+      <h2>Community</h2>
+      <p>Find safe spaces, connect, and build friendships.</p>
+      <a href="community.php" class="cta-link">Explore →</a>
+    </div>
+    <div class="card">
+      <h2>Events</h2>
+      <p>Stay updated on gatherings, workshops, and meetups.</p>
+      <a href="events.php" class="cta-link">See Events →</a>
+    </div>
+    <div class="card">
+      <h2>Opportunities</h2>
+      <p>Access scholarships, jobs, and collaborations.</p>
+      <a href="exchange.php" class="cta-link">Get Started →</a>
+    </div>
+  </section>
 
       <!-- Latest Events -->
       <section class="latest-events">
-        <h2>Upcoming Events</h2>
-        <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Community gathering" class="featured-image">
-        
+        <h2>Upcoming Events</h2>        
         <?php if ($eventResult && $eventResult->num_rows > 0): ?>
           <div class="event-list">
             <?php while($event = $eventResult->fetch_assoc()): ?>
@@ -845,10 +760,7 @@ footer a:hover {
       <!-- Latest Posts -->
       <section class="latest-posts">
         <h2>💫 Latest Community Stories</h2>
-        
-        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Women sharing stories" class="featured-image">
-
-        <?php if (empty($latestPosts)): ?>
+               <?php if (empty($latestPosts)): ?>
             <div style="text-align: center; padding: 2rem; color: var(--text-gray);">
                 <p>No posts yet. Be the first to share your story! ✨</p>
             </div>
