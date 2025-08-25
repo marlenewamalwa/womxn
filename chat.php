@@ -1,45 +1,40 @@
 <?php
 session_start();
-require 'db.php'; // Your DB connection (mysqli)
+require 'db.php';
 
 $loggedInUser = $_SESSION['user_id'] ?? 0;
-if (!$loggedInUser) {
-    die('You must be logged in to use the chat.');
-}
+if (!$loggedInUser) die('You must be logged in to use the chat.');
 
 $chatUser = isset($_GET['user']) ? (int)$_GET['user'] : 0;
-if ($chatUser === 0) {
-    die('No user selected for chat.');
-}
+if ($chatUser === 0) die('No user selected for chat.');
 
+// Fetch partner info
 $stmt = $conn->prepare("SELECT name, profile_pic FROM users WHERE id = ?");
 $stmt->bind_param("i", $chatUser);
 $stmt->execute();
-$result = $stmt->get_result();
-$partner = $result->fetch_assoc();
+$partner = $stmt->get_result()->fetch_assoc();
 $stmt->close();
+if (!$partner) die('User not found.');
 
-if (!$partner) {
-    die('User not found.');
-}
-
-// Handle sending a new message
+// Handle sending message
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $msg = trim($_POST['message'] ?? '');
     $filePath = null;
 
-    // File upload handling
-    if (!empty($_FILES['image']['name'])) {
-        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-        $maxSize = 5 * 1024 * 1024; // 5 MB
+    if (!empty($_FILES['media']['name'])) {
+        $allowedTypes = [
+            'image/jpeg','image/png','image/gif','image/webp',
+            'video/mp4','video/webm','video/ogg'
+        ];
+        $maxSize = 50 * 1024 * 1024; // 50MB
 
-        if ($_FILES['image']['error'] === UPLOAD_ERR_OK) {
-            $fileTmp = $_FILES['image']['tmp_name'];
+        if ($_FILES['media']['error'] === UPLOAD_ERR_OK) {
+            $fileTmp = $_FILES['media']['tmp_name'];
             $fileType = mime_content_type($fileTmp);
-            $fileSize = $_FILES['image']['size'];
+            $fileSize = $_FILES['media']['size'];
 
             if (in_array($fileType, $allowedTypes) && $fileSize <= $maxSize) {
-                $ext = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
+                $ext = pathinfo($_FILES['media']['name'], PATHINFO_EXTENSION);
                 $newName = uniqid('chat_', true) . '.' . $ext;
                 $uploadDir = __DIR__ . '/uploads/';
                 if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
@@ -56,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    $stmt = $conn->prepare("INSERT INTO messages (sender_id, receiver_id, content, file_path) VALUES (?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO messages (sender_id, receiver_id, content, media_path) VALUES (?, ?, ?, ?)");
     $stmt->bind_param("iiss", $loggedInUser, $chatUser, $msg, $filePath);
     $stmt->execute();
     $stmt->close();
@@ -67,80 +62,82 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Fetch messages
 $stmt = $conn->prepare("
-    SELECT sender_id, receiver_id, content, file_path, created_at 
-    FROM messages 
-    WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?)
+    SELECT sender_id, receiver_id, content, media_path, created_at
+    FROM messages
+    WHERE (sender_id=? AND receiver_id=?) OR (sender_id=? AND receiver_id=?)
     ORDER BY created_at ASC
 ");
 $stmt->bind_param("iiii", $loggedInUser, $chatUser, $chatUser, $loggedInUser);
 $stmt->execute();
-$result = $stmt->get_result();
-$messages = $result->fetch_all(MYSQLI_ASSOC);
+$messages = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 $stmt->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <title>Chat with <?= htmlspecialchars($partner['name']) ?></title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700;800&display=swap" rel="stylesheet" />
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-  font-family: 'poppins', sans-serif;
-  display: flex;
-  background: var(--lesbian-white);
-  color: var(--text-dark);
-  line-height: 1.6;
-}
-        .container { display: flex; width: 100%; }
-        main { margin-left: 240px; padding: 2rem; flex: 1; }
-        h1 { text-align: center; color: #872657; }
-        .messages { border: 1px solid #ccc; height: 400px; overflow-y: scroll; padding: 10px; background: #fff; margin-bottom: 1rem; border-radius: 5px; }
-        .message { margin-bottom: 10px; max-width: 70%; padding: 10px; border-radius: 10px; clear: both; }
-        .sent { background: #f4c2c2; float: right; text-align: right; }
-        .received { background: #d1b2d9; float: left; text-align: left; }
-        form { display: flex; gap: 10px; }
-        textarea { flex-grow: 1; resize: none; padding: 10px; font-size: 1rem; border-radius: 5px; border: 1px solid #ccc; }
-        button { background: #872657; color: white; border: none; padding: 0 20px; border-radius: 5px; cursor: pointer; font-size: 1rem; }
-        button:hover { background: #68212f; }
-    </style>
+<meta charset="UTF-8">
+<title>Chat with <?= htmlspecialchars($partner['name']) ?></title>
+<link rel="stylesheet" href="styles.css">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: 'Poppins', sans-serif; display:flex; background:#f9f9f9; color:#333; line-height:1.6; }
+.container { display:flex; width:100%; }
+main { margin-left:240px; padding:2rem; flex:1; }
+h1 { text-align:center; color:#872657; margin-bottom:1rem; }
+.messages { border:1px solid #ccc; height:400px; overflow-y:scroll; padding:10px; background:#fff; margin-bottom:1rem; border-radius:5px; }
+.message { margin-bottom:10px; max-width:70%; padding:10px; border-radius:10px; clear:both; }
+.sent { background:#f4c2c2; float:right; text-align:right; }
+.received { background:#d1b2d9; float:left; text-align:left; }
+form { display:flex; gap:10px; }
+textarea { flex-grow:1; resize:none; padding:10px; font-size:1rem; border-radius:5px; border:1px solid #ccc; }
+button { background:#872657; color:white; border:none; padding:0 20px; border-radius:5px; cursor:pointer; font-size:1rem; }
+button:hover { background:#68212f; }
+img, video { max-width:200px; display:block; margin-top:5px; border-radius:5px; }
+</style>
 </head>
 <body>
 <div class="container">
 <?php include 'sidebar.php'; ?>
 <main>
-    <h1>Chat with <?= htmlspecialchars($partner['name']) ?></h1>
-    <div class="messages" id="messages">
-        <?php if (!$messages): ?>
-            <p>No messages yet. Say hi!</p>
+<h1>Chat with <?= htmlspecialchars($partner['name']) ?></h1>
+<div class="messages" id="messages">
+<?php if (!$messages): ?>
+<p>No messages yet. Say hi!</p>
+<?php else: ?>
+<?php foreach ($messages as $msg): ?>
+<div class="message <?= $msg['sender_id']===$loggedInUser?'sent':'received' ?>">
+    <?php if (!empty($msg['content'])): ?>
+        <?= nl2br(htmlspecialchars($msg['content'])) ?><br>
+    <?php endif; ?>
+    <?php if (!empty($msg['media_path'])): ?>
+        <?php
+        $ext = strtolower(pathinfo($msg['media_path'], PATHINFO_EXTENSION));
+        if (in_array($ext, ['mp4','webm','ogg'])): ?>
+            <video controls>
+                <source src="<?= htmlspecialchars($msg['media_path']) ?>" type="video/<?= $ext ?>">
+                Your browser does not support the video tag.
+            </video>
         <?php else: ?>
-            <?php foreach ($messages as $msg): ?>
-                <div class="message <?= $msg['sender_id'] === $loggedInUser ? 'sent' : 'received' ?>">
-                    <?php if (!empty($msg['content'])): ?>
-                        <?= nl2br(htmlspecialchars($msg['content'])) ?><br>
-                    <?php endif; ?>
-                    <?php if (!empty($msg['file_path'])): ?>
-                        <img src="<?= htmlspecialchars($msg['file_path']) ?>" alt="Sent image" style="max-width:200px; display:block; margin-top:5px;">
-                    <?php endif; ?>
-                    <small style="font-size: 0.7rem; color: #666;">
-                        <?= date("M j, H:i", strtotime($msg['created_at'])) ?>
-                    </small>
-                </div>
-            <?php endforeach; ?>
+            <img src="<?= htmlspecialchars($msg['media_path']) ?>" alt="Sent media">
         <?php endif; ?>
-    </div>
-    <form method="post" action="chat.php?user=<?= $chatUser ?>" enctype="multipart/form-data">
-        <textarea name="message" rows="2" placeholder="Type your message..."></textarea>
-        <input type="file" name="image" accept="image/*">
-        <button type="submit">Send</button>
-    </form>
+    <?php endif; ?>
+    <small style="font-size:0.7rem;color:#666;">
+        <?= date("M j, H:i", strtotime($msg['created_at'])) ?>
+    </small>
+</div>
+<?php endforeach; ?>
+<?php endif; ?>
+</div>
+<form method="post" action="chat.php?user=<?= $chatUser ?>" enctype="multipart/form-data">
+    <textarea name="message" rows="2" placeholder="Type your message..."></textarea>
+    <input type="file" name="media" accept="image/*,video/*">
+    <button type="submit">Send</button>
+</form>
 </main>
 </div>
 <script>
-    const messagesDiv = document.getElementById('messages');
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+const messagesDiv = document.getElementById('messages');
+messagesDiv.scrollTop = messagesDiv.scrollHeight;
 </script>
 </body>
 </html>
