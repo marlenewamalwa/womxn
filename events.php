@@ -77,6 +77,14 @@ $locationsRes = $conn->query("SELECT DISTINCT location FROM events ORDER BY loca
         .pagination { margin-top:20px; text-align:center; }
         .pagination a { display:inline-block; padding:8px 12px; margin:0 5px; border:1px solid #872657; border-radius:4px; text-decoration:none; color:#872657; }
         .pagination a.active, .pagination a:hover { background:#872657; color:white; }
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            main { padding:1rem; margin-left:0; }
+            .events-container { grid-template-columns:1fr; }
+            .filters { flex-direction:column; }
+            .filters select, .filters button { width:100%; }
+            
+        }
     </style>
 </head>
 <body>

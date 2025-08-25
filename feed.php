@@ -388,41 +388,65 @@ main {
             border-radius: var(--border-radius);
         }
 
-        /* Responsive Design */
-        @media (max-width: 1200px) {
-            main {
-                margin-left: 280px;
-            }
-        }
-
+             /* responsive design */
         @media (max-width: 768px) {
             main {
                 margin-left: 0;
                 padding: 1rem;
+                margin-top: 60px; /* space for topbar */
             }
 
-            .search-section {
-                padding: 1.5rem;
-            }
-
-            .search-bar {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .search-bar button {
-                align-self: center;
-                min-width: 120px;
-            }
-
-            .post {
+            .post-form, .post {
                 padding: 1rem;
             }
 
+            .post img, .post video {
+                width: 100%;
+                height: auto;
+            }
+            .post .meta img {
+                width: 40px;
+                height: 40px;
+            }
+            .post .meta .user-name {
+                font-size: 0.95rem;
+            }
+            .post .meta .post-time {
+                font-size: 0.75rem;
+            }
+            .post-content {
+                font-size: 0.95rem;
+            }
+            .comments-header {
+                font-size: 1rem;
+            }
+            .comment {
+                padding: 0.75rem;
+            }
+            .comment-text {
+                font-size: 0.95rem;
+            }
+            .comment-form textarea {
+                font-size: 0.9rem;
+            }
+            .comment-form button {
+                font-size: 0.85rem;
+            }
             .form-actions {
                 flex-direction: column;
                 align-items: stretch;
             }
+            .file-input-container {
+                justify-content: center;
+            }
+            .post-form button[type="submit"] {
+                width: 100%;
+            }
+            .file-label {
+                justify-content: center;
+                width: 100%;
+            }
+            
         }
 
         /* Loading Animation */

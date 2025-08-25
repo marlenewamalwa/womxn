@@ -718,61 +718,6 @@ footer a:hover {
     text-decoration: underline;
 }
 
-/* Mobile responsiveness */
-@media (max-width: 768px) {
-    main {
-        margin-left: 0;
-        padding: 1rem;
-    }
-    
-    .hero {
-        padding: 2.5rem 1.5rem;
-    }
-    
-    .hero h1 {
-        font-size: 2.5rem;
-    }
-    
-    .nav-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .event-card {
-        flex-direction: column;
-        text-align: center;
-    }
-    
-    .event-card img {
-        width: 100%;
-        height: 200px;
-        align-self: center;
-    }
-    
-    .newsletter-form {
-        flex-direction: column;
-        gap: 1rem;
-        padding: 1rem;
-    }
-    
-    .newsletter-form input,
-    .newsletter-form button {
-        border-radius: 50px;
-    }
-    
-    .search {
-        width: 100%;
-    }
-    
-    .search input {
-        width: 100%;
-    }
-    
-    .topbar {
-        flex-direction: column;
-        gap: 1rem;
-    }
-}
-
 /* Accessibility improvements */
 .btn:focus,
 .search-btn:focus,
@@ -785,6 +730,16 @@ footer a:hover {
     outline: 2px solid var(--lesbian-orange);
     outline-offset: 4px;
 }
+ /*mobile friendly layout */
+@media (max-width: 600px) { 
+    main { padding: 1rem; margin-left: 0; }
+    .posts-grid { grid-template-columns: 1fr; }
+    .event-list { grid-template-columns: 1fr; }
+    .community-stats { grid-template-columns: 1fr; }
+    .opportunity-container { flex-direction: column; text-align: center; }
+    .opportunity-text { padding: 0 1rem; }
+}
+       
 
 </style>
 </head>

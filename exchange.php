@@ -134,17 +134,16 @@ form.filter-form button:hover {
     background: #cc2e6c; /* slightly darker on hover */
 }
 
-/* Mobile friendly layout */
+/* Responsive adjustments */
 @media (max-width: 600px) {
-    form.filter-form {
+    form.filter-form {  
         flex-direction: column;
-    }
-    form.filter-form input,
-    form.filter-form select,
-    form.filter-form button {
         width: 100%;
     }
+    main { padding: 1rem; margin-left: 0; }
+    .listing-container { grid-template-columns: 1fr; }
 }
+
 
     </style>
 </head>
