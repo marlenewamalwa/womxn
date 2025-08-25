@@ -11,9 +11,9 @@ if ($isLoggedIn) {
     $stmt = $conn->prepare("SELECT profile_pic FROM users WHERE id = ?");
     $stmt->bind_param("i", $userId);
     $stmt->execute();
-    $stmt->bind_result($profilePic);
-    if ($stmt->fetch()) {
-        $pic = $profilePic ?: $pic;
+    $result = $stmt->get_result();
+    if ($row = $result->fetch_assoc()) {
+        $pic = !empty($row['profile_pic']) ? $row['profile_pic'] : $pic;
     }
     $stmt->close();
 }
@@ -31,21 +31,18 @@ if ($result && $result->num_rows > 0) {
         $posts[] = $row;
     }
 }
-
-
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WOMXN | Feed</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Macondo&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WOMXN | Feed</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Macondo&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+   <style>
         :root {
             --primary-color: #872657;
             --primary-hover: #68212f;
@@ -450,107 +447,184 @@ main {
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Sidebar -->
-        <?php include 'sidebar.php'; ?>
-        <?php include 'topbar.php'; ?>
+<div class="container">
+    <?php include 'sidebar.php'; ?>
+    <?php include 'topbar.php'; ?>
 
-        <!-- Main Content -->
-        <main>
-            
-            <?php if ($isLoggedIn): ?>
-                <div class="post-form">
-                    <form action="create_post.php" method="POST" enctype="multipart/form-data">
-                        <textarea name="content" placeholder="What's on your mind? Share your thoughts with the community..." required></textarea>
-                        <div class="form-actions">
-                            <div class="file-input-container">
-                                <input type="file" name="image" accept="image/*" id="image-upload">
-                                <label for="image-upload" class="file-label">
-                                    <i class="fas fa-image"></i> Add Photo
-                                </label>
-                            </div>
-                            <button type="submit">
-                                <i class="fas fa-paper-plane"></i> Share Post
-                            </button>
+    <main>
+        <?php if ($isLoggedIn): ?>
+            <div class="post-form">
+                <form action="create_post.php" method="POST" enctype="multipart/form-data">
+                    <textarea name="content" placeholder="What's on your mind? Share your thoughts with the community..." required></textarea>
+                  <div id="media-preview" style="margin-top:16px;">
+                    <!-- Media previews will be shown here -->
+                  </div>
+                    <div class="form-actions">
+                        <div class="file-input-container">
+                            <input type="file" name="image" accept="image/*" id="image-upload">
+                            <label for="image-upload" class="file-label">
+                                <i class="fas fa-image"></i> Add Photo
+                            </label>
                         </div>
-                    </form>
+
+                        <div class="file-input-container">
+                            <input type="file" name="video" accept="video/*" id="video-upload">
+                            <label for="video-upload" class="file-label">
+                                <i class="fas fa-video"></i> Add Video
+                            </label>
+                        </div>
+
+                        <button type="submit">
+                            <i class="fas fa-paper-plane"></i> Share Post
+                        </button>
+                    </div>
+                </form>
+            </div>
+        <?php endif; ?>
+
+        <?php foreach ($posts as $post): ?>
+            <div class="post">
+                <div class="meta">
+                    <img src="<?= htmlspecialchars($post['profile_pic'] ?: 'uploads/default.jpeg') ?>" 
+                         alt="<?= htmlspecialchars($post['name']) ?>'s Profile"
+                         onerror="this.src='uploads/default.jpeg'">
+                    <div class="user-info">
+                        <div class="user-name"><?= htmlspecialchars($post['name']) ?></div>
+                        <div class="post-time"><?= htmlspecialchars($post['created_at']) ?></div>
+                    </div>
                 </div>
-            <?php endif; ?>
 
-            <?php foreach ($posts as $post): ?>
-                <div class="post">
-                    <div class="meta">
-                         <img src="<?= htmlspecialchars($row['profile_pic'] ?: 'uploads/default.jpeg') ?>" 
-                              alt="<?= htmlspecialchars($post['name']) ?>'s Profile"
-                              onerror="this.src='uploads/default.jpeg'">
-                        <div class="user-info">
-                            <div class="user-name"><?= htmlspecialchars($post['name']) ?></div>
-                            <div class="post-time"><?= htmlspecialchars($post['created_at']) ?></div>
-                        </div>
-                    </div>
-                    <div class="post-content">
-                        <?= nl2br(htmlspecialchars($post['content'])) ?>
-                    </div>
-                    <?php if (!empty($post['image'])): ?>
-                        <img src="<?= htmlspecialchars($post['image']) ?>" alt="Post Image">
-                    <?php endif; ?>
-                    
-                    <?php
-                    // Fetch comments for this post
-                    $post_id = $post['id'];
-                    $stmt = $conn->prepare("SELECT comments.comment_text, comments.created_at, users.name 
-                                            FROM comments 
-                                            JOIN users ON comments.user_id = users.id 
-                                            WHERE comments.post_id = ? 
-                                            ORDER BY comments.created_at ASC");
-                    $stmt->bind_param("i", $post_id);
-                    $stmt->execute();
-                    $comments_result = $stmt->get_result();
-                    ?>
+                <div class="post-content">
+                    <?= nl2br(htmlspecialchars($post['content'])) ?>
+                </div>
 
-                    <div class="comments-section">
-                        <div class="comments-header">
-                            <i class="fas fa-comments"></i>
-                            Comments (<?= $comments_result->num_rows ?>)
-                        </div>
-                        
-                        <?php if ($comments_result->num_rows > 0): ?>
-                            <?php while ($comment = $comments_result->fetch_assoc()): ?>
-                                <div class="comment">
-                                    <div class="comment-header">
-                                        <span class="comment-author"><?= htmlspecialchars($comment['name']) ?></span>
-                                        <span class="comment-time"><?= htmlspecialchars($comment['created_at']) ?></span>
-                                    </div>
-                                    <div class="comment-text"><?= nl2br(htmlspecialchars($comment['comment_text'])) ?></div>
+                <?php if (!empty($post['image'])): ?>
+                    <img src="<?= htmlspecialchars($post['image']) ?>" alt="Post Image">
+                <?php endif; ?>
+
+                <?php if (!empty($post['video_path'])): ?>
+                    <video width="400" controls>
+                        <source src="<?= htmlspecialchars($post['video_path']) ?>" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                <?php endif; ?>
+
+                <?php
+                // Fetch comments for this post
+                $post_id = $post['id'];
+                $stmt = $conn->prepare("SELECT comments.comment_text, comments.created_at, users.name 
+                                        FROM comments 
+                                        JOIN users ON comments.user_id = users.id 
+                                        WHERE comments.post_id = ? 
+                                        ORDER BY comments.created_at ASC");
+                $stmt->bind_param("i", $post_id);
+                $stmt->execute();
+                $comments_result = $stmt->get_result();
+                ?>
+
+                <div class="comments-section">
+                    <div class="comments-header">
+                        <i class="fas fa-comments"></i>
+                        Comments (<?= $comments_result->num_rows ?>)
+                    </div>
+
+                    <?php if ($comments_result->num_rows > 0): ?>
+                        <?php while ($comment = $comments_result->fetch_assoc()): ?>
+                            <div class="comment">
+                                <div class="comment-header">
+                                    <span class="comment-author"><?= htmlspecialchars($comment['name']) ?></span>
+                                    <span class="comment-time"><?= htmlspecialchars($comment['created_at']) ?></span>
                                 </div>
-                            <?php endwhile; ?>
-                        <?php else: ?>
-                            <div class="no-comments">
-                                <i class="fas fa-comment-slash"></i>
-                                No comments yet. Be the first to share your thoughts!
+                                <div class="comment-text"><?= nl2br(htmlspecialchars($comment['comment_text'])) ?></div>
                             </div>
-                        <?php endif; ?>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <div class="no-comments">
+                            <i class="fas fa-comment-slash"></i>
+                            No comments yet. Be the first to share your thoughts!
+                        </div>
+                    <?php endif; ?>
 
-                        <?php if ($isLoggedIn): ?>
-                            <form action="submit_comment.php" method="POST" class="comment-form">
-                                <input type="hidden" name="post_id" value="<?= $post_id ?>">
-                                <textarea name="comment_text" placeholder="Share your thoughts on this post..." required></textarea>
-                                <button type="submit">
-                                    <i class="fas fa-reply"></i> Post Comment
-                                </button>
-                            </form>
-                        <?php else: ?>
-                            <div class="login-prompt">
-                                <i class="fas fa-sign-in-alt"></i>
-                                Please log in to leave a comment and join the conversation.
-                            </div>
-                        <?php endif; ?>
-                    </div>
-
-                    <?php $stmt->close(); ?>
+                    <?php if ($isLoggedIn): ?>
+                        <form action="submit_comment.php" method="POST" class="comment-form">
+                            <input type="hidden" name="post_id" value="<?= $post_id ?>">
+                            <textarea name="comment_text" placeholder="Share your thoughts on this post..." required></textarea>
+                            <button type="submit">
+                                <i class="fas fa-reply"></i> Post Comment
+                            </button>
+                        </form>
+                    <?php else: ?>
+                        <div class="login-prompt">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Please log in to leave a comment and join the conversation.
+                        </div>
+                    <?php endif; ?>
                 </div>
-            <?php endforeach; ?>
-        </main>
-    </div>
+
+                <?php $stmt->close(); ?>
+            </div>
+        <?php endforeach; ?>
+    </main>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const imageInput = document.getElementById('image-upload');
+    const videoInput = document.getElementById('video-upload');
+    const previewContainer = document.getElementById('media-preview');
+
+    function clearPreview() {
+        previewContainer.innerHTML = '';
+    }
+
+    function createImagePreview(file) {
+        const img = document.createElement('img');
+        img.style.maxWidth = '400px';
+        img.style.maxHeight = '400px';
+        img.style.borderRadius = '12px';
+        img.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.06)';
+        img.src = URL.createObjectURL(file);
+        img.onload = () => URL.revokeObjectURL(img.src);
+        return img;
+    }
+
+    function createVideoPreview(file) {
+        const video = document.createElement('video');
+        video.controls = true;
+        video.style.maxWidth = '400px';
+        video.style.maxHeight = '400px';
+        video.style.borderRadius = '12px';
+        video.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.06)';
+        video.src = URL.createObjectURL(file);
+        video.onload = () => URL.revokeObjectURL(video.src);
+        return video;
+    }
+
+    function handleFileChange() {
+        clearPreview();
+
+        if (imageInput.files.length > 0) {
+            // If an image is selected, show image preview
+            const file = imageInput.files[0];
+            if (file.type.startsWith('image/')) {
+                previewContainer.appendChild(createImagePreview(file));
+                // Clear video input to avoid conflict
+                videoInput.value = '';
+            }
+        } else if (videoInput.files.length > 0) {
+            // If video is selected, show video preview
+            const file = videoInput.files[0];
+            if (file.type.startsWith('video/')) {
+                previewContainer.appendChild(createVideoPreview(file));
+                // Clear image input to avoid conflict
+                imageInput.value = '';
+            }
+        }
+    }
+
+    imageInput.addEventListener('change', handleFileChange);
+    videoInput.addEventListener('change', handleFileChange);
+});
+</script>
+
 </body>
 </html>

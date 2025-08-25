@@ -849,9 +849,14 @@ footer a:hover {
 
                   <p><?= nl2br(htmlspecialchars($post['content'])) ?></p>
 
-                  <?php if (!empty($post['image'])): ?>
-                      <img src="<?= htmlspecialchars($post['image']) ?>" class="post-image" alt="Post Image">
-                  <?php endif; ?>
+               <?php if (!empty($post['image'])): ?>
+    <img src="<?= htmlspecialchars($post['image']) ?>" class="post-image" alt="Post Image">
+<?php elseif (!empty($post['video_path'])): ?>
+    <video controls class="post-image">
+        <source src="<?= htmlspecialchars($post['video_path']) ?>" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+<?php endif; ?>
 
                   <small><?= date("F j, Y, g:i a", strtotime($post['created_at'])) ?></small>
               </div>
