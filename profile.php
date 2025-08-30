@@ -32,16 +32,31 @@ while ($row = $post_result->fetch_assoc()) {
 }
 $post_stmt->close();
 
-// Get other members except current user
-$otherMembers = [];
-$stmt = $conn->prepare("SELECT id, name FROM users WHERE id != ? ORDER BY name ASC");
-$stmt->bind_param("i", $user_id);
-$stmt->execute();
-$result = $stmt->get_result();
-while ($row = $result->fetch_assoc()) {
-    $otherMembers[] = $row;
+// Get user events
+$events = [];
+$event_stmt = $conn->prepare("SELECT * FROM events WHERE user_id = ? ORDER BY event_date DESC");
+$event_stmt->bind_param("i", $user_id);
+$event_stmt->execute();
+$event_result = $event_stmt->get_result();
+while ($row = $event_result->fetch_assoc()) {
+    $events[] = $row;
 }
-$stmt->close();
+$event_stmt->close();
+
+// Get user exchange listings
+$listings = [];
+$list_stmt = $conn->prepare("SELECT id, type, description, category, location, payment, created_at 
+                             FROM exchange_listings 
+                             WHERE user_id = ? 
+                             ORDER BY created_at DESC");
+$list_stmt->bind_param("i", $user_id);
+$list_stmt->execute();
+$list_result = $list_stmt->get_result();
+while ($row = $list_result->fetch_assoc()) {
+    $listings[] = $row;
+}
+$list_stmt->close();
+
 
 // Fetch distinct chat partners
 $chat_partners = [];
@@ -68,476 +83,247 @@ $stmt->close();
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Profile</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Profile</title>
+  <link rel="stylesheet" href="styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Macondo&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #872657;
+      --bg: #faf7fb;
+      --text: #2d3748;
+      --muted: #718096;
+      --card-bg: #ffffffee;
+    }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: #ffe6f0;
-            min-height: 100vh;
-            color: #333;
-        }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        .container {
-            display: flex;
-            width: 100%;
-            min-height: 100vh;
-        }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #fff7fa, #f0e8f2);
+      color: var(--text);
+    }
 
-        main {
-            margin-left: 240px;
-            flex: 1;
-            padding: 2rem;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-        }
+    .container { display: flex; min-height: 100vh; }
 
-        /* Profile Header Section */
-        .profile-header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
+    main { flex: 1; padding: 2rem; margin-left: 240px;
+      margin-top: 60px; /* space for topbar */ 
+    min-height: 100vh;
+}
 
-        .profile-info {
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-            margin-bottom: 1.5rem;
-        }
+    /* Profile Header */
+    .profile-header {
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-top: 1rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+      text-align: center;
+    }
 
-        .profile-avatar {
-            position: relative;
-        }
+    .profile-avatar img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 4px solid #fff;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      margin-bottom: 1rem;
+      transition: transform .3s;
+    }
+    .profile-avatar img:hover { transform: scale(1.05); }
 
-        .profile-avatar img {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 4px solid #fff;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease;
-        }
+    .profile-details h1 { font-size: 1.8rem; color: var(--primary); }
+    .info-item { font-size: .9rem; color: var(--muted); margin-top: .25rem; }
 
-        .profile-avatar img:hover {
-            transform: scale(1.05);
-        }
+    .profile-actions { margin-top: 1rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
 
-        .profile-details h1 {
-            font-size: 2rem;
-            font-weight: 600;
-            color: #2d3748;
-            margin-bottom: 0.5rem;
-        }
+    .btn {
+      padding: .7rem 1.3rem; border-radius: 10px; text-decoration: none; font-weight: 500;
+      display: inline-flex; align-items: center; gap: .5rem; transition: all .3s ease; cursor: pointer;
+    }
+    .btn-primary { background: var(--primary); color: white; margin-bottom: 6px; }
+    .btn-primary:hover { background: #a23b6a; }
+    .btn-outline { border: 2px solid var(--primary); color: var(--primary); }
+    .btn-outline:hover { background: var(--primary); color: white; }
 
-        .profile-details .info-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 0.5rem;
-            color: #718096;
-            font-size: 0.9rem;
-        }
+    /* Tabs */
+    .tabs { display: flex; gap: 1rem; margin-bottom: 1rem; }
+    .tab-btn {
+      flex: 1; text-align: center; padding: .8rem; border-radius: 10px; cursor: pointer;
+      background: #f2e6ef; color: var(--primary); font-weight: 500; transition: .3s;
+    }
+    .tab-btn.active, .tab-btn:hover { background: var(--primary); color: #fff; }
 
-        .profile-details .info-item i {
-            color: #872657;
-            width: 16px;
-        }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
 
-        .profile-actions {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
+    /* Sections */
+    .posts-section, .sidebar-panel, .messages-section {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
 
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+    .section-header { display: flex; align-items: center; gap: .5rem; margin-bottom: 1rem; }
+    .section-header h2 { font-size: 1.3rem; }
+    .section-header i { color: var(--primary); }
 
-        .btn-primary {
-            background:  #872657;
-            color: white;
-        }
+    .post {
+      background: #fff;
+      padding: 1rem;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+      border: 1px solid #eee;
+      transition: .3s;
+    }
+    .post:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+    .post img { width: 100%; border-radius: 10px; margin-top: .5rem; }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-        }
+    .empty-state { text-align: center; color: var(--muted); padding: 2rem 1rem; }
+    .empty-state i { font-size: 2rem; display: block; margin-bottom: .5rem; color: #ccc; }
 
-        .btn-outline {
-            background: transparent;
-            color: #872657;
-            border: 2px solid #872657;
-        }
+    /* Sidebar */
+    .member-item, .chat-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: .6rem .8rem; border-radius: 10px; transition: background .3s;
+    }
+    .member-item:hover, .chat-item:hover { background: #f9f1f5; }
+    .chat-avatar { display: flex; align-items: center; gap: .75rem; }
+    .chat-avatar img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #eee; }
 
-        .btn-outline:hover {
-            background: #668726577eea;
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        /* Content Grid */
-        .content-grid {
-            display: grid;
-            grid-template-columns: 1fr 300px;
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        /* Posts Section */
-        .posts-section {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 2rem;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-           height:auto;
-        }
-
-        .section-header {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid #e2e8f0;
-        }
-
-        .section-header h2 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #2d3748;
-        }
-
-        .section-header i {
-            color: #872657;
-            font-size: 1.2rem;
-        }
-
-        .post {
-            background: #f8fafc;
-            padding: 1.5rem;
-            border-radius: 15px;
-            margin-bottom: 1rem;
-            border: 1px solid #e2e8f0;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .post:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
-
-        .post img {
-            max-width: 80%;
-
-            margin-top: 1rem;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .post-meta {
-            color: #718096;
-            font-size: 0.8rem;
-            margin-top: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 3rem;
-            color: #718096;
-        }
-
-        .empty-state i {
-            font-size: 3rem;
-            color: #cbd5e0;
-            margin-bottom: 1rem;
-        }
-         .postbtn {
-            display: inline-block;
-            background: #872657;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            margin-top: 1rem;}
-
-        /* Sidebar Panels */
-        .sidebar-panel {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .panel-header {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .panel-header h3 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #2d3748;
-        }
-
-        .panel-header i {
-            color: #872657;
-        }
-
-        .member-item, .chat-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0.75rem;
-            border-radius: 10px;
-            margin-bottom: 0.5rem;
-            transition: background-color 0.3s ease;
-         
-        }
-
-        .member-item:hover, .chat-item:hover {
-            background-color: #f1f5f9;
-        }
-
-        .chat-avatar {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .chat-avatar img {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #e2e8f0;
-        }
-
-        .msg-link {
-            font-size: 0.8rem;
-            color: #872657;
-            text-decoration: none;
-            padding: 0.4rem 0.8rem;
-            border-radius: 6px;
-            border: 1px solid #872657;
-            transition: all 0.3s ease;
-        }
-
-        .msg-link:hover {
-            background: #872657;
-            color: white;
-        }
-
-        /* Messages Section */
-        .messages-section {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 2rem;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        /* Responsive Design */
-        @media (max-width: 1200px) {
-            .content-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            main {
-                margin-left: 0;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .profile-info {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .profile-actions {
-                justify-content: center;
-            }
-            
-            main {
-                padding: 1rem;
-            }
-        }
-    </style>
+    @media (max-width: 992px) { main { margin-left: 0; padding: 1rem; } }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Sidebar -->
-        <?php include 'sidebar.php'; ?>
-        
-        <main>
-            <!-- Profile Header -->
-            <div class="profile-header">
-                <div class="profile-info">
-                    <div class="profile-avatar">
-                        <img src="<?= htmlspecialchars($profile_pic_url) ?>" alt="Profile Picture">
-                    </div>
-                    <div class="profile-details">
-                        <h1><?= htmlspecialchars($name) ?></h1>
-                       
-                        <div class="info-item">
-                            <i class="fas fa-user"></i>
-                            <span><?= htmlspecialchars($pronouns) ?></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="profile-actions">
-                    <a href="edit_profile.php" class="btn btn-primary">
-                        <i class="fas fa-edit"></i>
-                        Edit Profile
-                    </a>
-                    <a href="logout.php" class="btn btn-outline">
-                        <i class="fas fa-sign-out-alt"></i>
-                        Logout
-                    </a>
-                </div>
-            </div>
+<div class="container">
+  <?php include 'sidebar.php'; ?>
+  <?php include 'topbar.php'; ?>
 
-            <!-- Content Grid -->
-            <div class="content-grid">
-                <!-- Posts Section -->
-                <div class="posts-section">
-                    <div class="section-header">
-                        <i class="fas fa-newspaper"></i>
-                        <h2>Your Posts</h2>
-                    
-                    </div>
-                        <div>
-                            <a href="create_post.php" class="postbtn">
-                                <i class="fas fa-plus"></i>
-                                Create New Post
-                            </a>
-                        </div>
-                    <?php if (!empty($posts)): ?>
-                        <?php foreach ($posts as $post): ?>
-                            <div class="post">
-                                <p><?= nl2br(htmlspecialchars($post['content'])) ?></p>
-                                <?php if ($post['image']): ?>
-                                    <img src="<?= htmlspecialchars($post['image']) ?>" alt="Post Image">
-                                <?php endif; ?>
-                                <div class="post-meta">
-                                    <i class="fas fa-clock"></i>
-                                    <span>Posted on <?= htmlspecialchars($post['created_at']) ?></span>
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <div class="empty-state">
-                            <i class="fas fa-pen-alt"></i>
-                            <p>You haven't made any posts yet.</p>
-                        </div>
-                    <?php endif; ?>
-                       
-                </div>
-                
-
-                <!-- Sidebar Panels -->
-                <div class="sidebar-content">
-                    <!-- Other Members Panel -->
-                    <div class="sidebar-panel">
-                        <div class="panel-header">
-                            <i class="fas fa-users"></i>
-                            <h3>Other Members</h3>
-                        </div>
-                        
-                        <?php if (!empty($otherMembers)): ?>
-                            <?php foreach ($otherMembers as $m): ?>
-                                <div class="member-item">
-                                    <span><?= htmlspecialchars($m['name']) ?></span>
-                                    <a href="user_profile.php?id=<?= $m['id'] ?>" class="msg-link">
-                                        <i class="fas fa-user"></i>
-                                        View Profile
-                                    </a>
-                                  </div>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <div class="empty-state">
-                                <i class="fas fa-user-friends"></i>
-                                <p>No other members found.</p>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                        <!-- Messages Section -->
-            <div class="messages-section">
-                <div class="section-header">
-                    <i class="fas fa-comments"></i>
-                    <h2>Your Messages</h2>
-                </div>
-                
-                <?php if (!empty($chat_partners)): ?>
-                    <?php foreach ($chat_partners as $partner): ?>
-                        <div class="chat-item">
-                            <div class="chat-avatar">
-                                <?php 
-                                $pic = (!empty($partner['profile_pic']) && file_exists("uploads/" . $partner['profile_pic'])) 
-                                    ? "uploads/" . $partner['profile_pic'] 
-                                    : "uploads/default.jpeg"; 
-                                ?>
-                                <img src="<?= htmlspecialchars($pic) ?>" alt="Profile Pic">
-                                <span><?= htmlspecialchars($partner['name']) ?></span>
-                            </div>
-                            <a href="chat.php?user=<?= $partner['id'] ?>" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.8rem;">
-                                <i class="fas fa-comment"></i>
-                                Chat
-                            </a>
-                        </div>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <div class="empty-state">
-                        <i class="fas fa-inbox"></i>
-                        <p>You have no messages yet.</p>
-                    </div>
-                <?php endif; ?>
-            </div>
-                </div>
-                
-            </div>
-
-        
-        </main>
+  <main>
+    <!-- Profile Header -->
+    <div class="profile-header">
+      <div class="profile-avatar">
+        <img src="<?= htmlspecialchars($profile_pic_url) ?>" alt="Profile Picture">
+      </div>
+      <div class="profile-details">
+        <h1><?= htmlspecialchars($name) ?></h1>
+        <div class="info-item"><i class="fas fa-user"></i> <?= htmlspecialchars($pronouns) ?></div>
+      </div>
+      <div class="profile-actions">
+        <a href="edit_profile.php" class="btn btn-primary"><i class="fas fa-edit"></i> Edit Profile</a>
+        <a href="logout.php" class="btn btn-outline"><i class="fas fa-sign-out-alt"></i> Logout</a>
+      </div>
     </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <div class="tab-btn active" data-tab="posts">Posts</div>
+      <div class="tab-btn" data-tab="events">Events</div>
+      <div class="tab-btn" data-tab="listings">Listings</div>
+    </div>
+
+    <!-- Posts -->
+    <div id="posts" class="tab-content active">
+      <div class="posts-section">
+        <div class="section-header"><i class="fas fa-newspaper"></i><h2>Your Posts</h2></div>
+        <a href="create_post.php" class="btn btn-primary"><i class="fas fa-plus"></i> New Post</a>
+        <?php if (!empty($posts)): foreach ($posts as $post): ?>
+          <div class="post">
+            <p><?= nl2br(htmlspecialchars($post['content'])) ?></p>
+            <?php if ($post['image']): ?><img src="<?= htmlspecialchars($post['image']) ?>" alt="Post Image"><?php endif; ?>
+                <div class="post-meta"><i class="fas fa-clock"></i> <?= htmlspecialchars($post['created_at']) ?></div>
+            <a href="edit_post.php?id=<?= $post['id'] ?>">Edit</a> |
+                <a href="delete_post.php?id=<?= $post['id'] ?>">Delete</a>
+          
+            </div>
+        <?php endforeach; else: ?>
+          <div class="empty-state"><i class="fas fa-pen-alt"></i>No posts yet.</div>
+        <?php endif; ?>
+      </div>
+    </div>
+
+    <!-- Events -->
+    <div id="events" class="tab-content">
+      <div class="posts-section">
+        <div class="section-header"><i class="fas fa-calendar-alt"></i><h2>Your Events</h2></div>
+        <a href="create_event.php" class="btn btn-primary"><i class="fas fa-plus"></i> New Event</a>
+        <?php if (!empty($events)): foreach ($events as $event): ?>
+          <div class="post">
+            <h3><?= htmlspecialchars($event['title']) ?></h3>
+            <p><strong>Date:</strong> <?= htmlspecialchars($event['event_date']) ?></p>
+            <p><strong>Location:</strong> <?= htmlspecialchars($event['location']) ?></p>
+            <p><?= nl2br(htmlspecialchars($event['description'])) ?></p>
+            <a href="delete_event.php?id=<?= $event['id'] ?>">Delete</a>
+            <a href="edit_event.php?id=<?= $event['id'] ?>">Edit</a>
+               
+          </div>
+        <?php endforeach; else: ?>
+          <div class="empty-state"><i class="fas fa-calendar-times"></i>No events yet.</div>
+        <?php endif; ?>
+        
+      </div>
+      
+    </div>
+
+    <!-- Listings -->
+    <div id="listings" class="tab-content">
+      <div class="posts-section">
+        <div class="section-header"><i class="fas fa-exchange-alt"></i><h2>Your Listings</h2></div>
+        <a href="post_exchange.php" class="btn btn-primary"><i class="fas fa-plus"></i> New Listing</a>
+        <?php if (!empty($listings)): foreach ($listings as $l): ?>
+          <div class="post">
+            <p><strong>Type:</strong> <?= htmlspecialchars($l['type']) ?></p>
+            <p><strong>Description:</strong> <?= htmlspecialchars($l['description']) ?></p>
+            <p><strong>Category:</strong> <?= htmlspecialchars($l['category']) ?></p>
+            <p><strong>Location:</strong> <?= htmlspecialchars($l['location']) ?></p>
+            <p><strong>Payment:</strong> <?= htmlspecialchars($l['payment']) ?></p>
+            <div class="post-meta"><i class="fas fa-clock"></i> <?= htmlspecialchars($l['created_at']) ?></div>
+            <a href="edit_listing.php?id=<?= $l['id'] ?>">Edit</a> 
+            <a href="delete_listing.php?id=<?= $l['id'] ?>">Delete</a>
+        </div>
+        <?php endforeach; else: ?>
+          <div class="empty-state"><i class="fas fa-exchange-alt"></i>No listings yet.</div>
+        <?php endif; ?>
+      </div>
+    </div>
+
+ 
+
+      <div class="messages-section">
+        <div class="section-header"><i class="fas fa-comments"></i><h2>Your Messages</h2></div>
+        <?php if (!empty($chat_partners)): foreach ($chat_partners as $partner): ?>
+          <div class="chat-item">
+            <div class="chat-avatar">
+              <?php $pic = (!empty($partner['profile_pic']) && file_exists("uploads/" . $partner['profile_pic'])) ? "uploads/" . $partner['profile_pic'] : "uploads/default.jpeg"; ?>
+              <img src="<?= htmlspecialchars($pic) ?>" alt="Profile Pic">
+              <span><?= htmlspecialchars($partner['name']) ?></span>
+            </div>
+            <a href="chat.php?user=<?= $partner['id'] ?>" class="btn btn-primary" style="padding:.4rem .8rem;font-size:.8rem;">Chat</a>
+          </div>
+        <?php endforeach; else: ?>
+          <div class="empty-state"><i class="fas fa-inbox"></i>No messages yet.</div>
+        <?php endif; ?>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  // Tab switching
+  document.querySelectorAll(".tab-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+      btn.classList.add("active");
+      document.getElementById(btn.dataset.tab).classList.add("active");
+    });
+  });
+</script>
 </body>
 </html>

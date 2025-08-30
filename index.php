@@ -71,7 +71,7 @@ if (isset($_GET['q']) && !empty($_GET['q'])) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>WOMXN | Queer Platform</title>
+  <title>Queer Platform</title>
   <link rel="stylesheet" href="styles.css">
   <link href="https://fonts.googleapis.com/css2?family=Macondo&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -731,15 +731,72 @@ footer a:hover {
     outline-offset: 4px;
 }
  /*mobile friendly layout */
-@media (max-width: 600px) { 
-    main { padding: 1rem; margin-left: 0; }
-    .posts-grid { grid-template-columns: 1fr; }
-    .event-list { grid-template-columns: 1fr; }
-    .community-stats { grid-template-columns: 1fr; }
-    .opportunity-container { flex-direction: column; text-align: center; }
-    .opportunity-text { padding: 0 1rem; }
+/* Mobile friendly layout refinements */
+@media (max-width: 768px) {
+  main {
+    padding: 1rem;
+    margin-left: 0;
+  }
+
+  .hero h1 {
+    font-size: 2rem;
+    line-height: 1.3;
+  }
+
+  .hero p {
+    font-size: 1rem;
+  }
+
+  .search input[type="text"] {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 0.5rem;
+  }
+
+  .search-btn {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .newsletter {
+    padding: 2rem 1rem;
+  }
+
+  .newsletter-form {
+    flex-direction: column;
+    border-radius: 20px;
+    padding: 0.8rem;
+  }
+
+  .newsletter-form input,
+  .newsletter-form button {
+    width: 100%;
+    border-radius: 12px;
+    margin: 0.3rem 0;
+  }
 }
-       
+
+@media (max-width: 600px) {
+  .posts-grid,
+  .event-list,
+  .community-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .opportunity-container {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .opportunity-text {
+    padding: 0 0.5rem;
+  }
+
+  .hero h1 {
+    font-size: 1.8rem;
+  }
+}
+
 
 </style>
 </head>
@@ -757,7 +814,7 @@ footer a:hover {
     <div class="hero-content">
       <p>Connecting queer women in Kenya through community, events, and opportunities.</p>
       <div class="hero-ctas">
-        <a href="community.php" class="cta-btn primary">Join the Community</a>
+        <a href="community.php" class="cta-btn primary">See the Community</a>
         <a href="about.php" class="cta-btn secondary">Learn More</a>
       </div>
     </div>

@@ -1,13 +1,8 @@
 <?php
 session_start();
 require_once 'db.php';
+$user_id = $_SESSION['user_id'] ?? null;
 
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit();
-}
-
-$user_id = $_SESSION['user_id'];
 
 $where = "WHERE status='open' AND type != 'job'";
 

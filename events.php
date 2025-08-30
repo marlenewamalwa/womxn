@@ -53,39 +53,162 @@ $locationsRes = $conn->query("SELECT DISTINCT location FROM events ORDER BY loca
 <html>
 <head>
     <title>WOMXN | Events</title>
+      <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Macondo&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Poppins', sans-serif; background:#fff; color:#2b2b2b; display:flex; }
-        .container { display:flex; width:100%; }
-        main { margin-left:240px; padding:2rem; flex:1; margin-top:60px; }
-        .btn { background:#872657; color:white; padding:10px 20px; border-radius:5px; text-decoration:none; }
-        .events-container { display:grid; 
-            grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:20px; margin-top:20px; }
-        .event-card { background:#f8f0f4ff; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); transition:0.3s; }
-        .event-card:hover { transform:scale(1.02); }
-        .event-card img { width:100%; height:180px; object-fit:cover; border-top-left-radius:8px; border-top-right-radius:8px; }
-        .event-info { padding:15px; }
-        .event-date { color:#c0392b; font-weight:bold; margin-bottom:10px; }
-        .ticket-btn { background:#e74c3c; color:white; padding:8px 12px; border-radius:5px; text-decoration:none; }
-        .ticket-btn:hover { background:#c0392b; }
-        .filters { margin:20px 0; display:flex; gap:10px; }
-        .filters select { padding:8px; border:1px solid #ccc; border-radius:6px; }
-        .filters button { background:#872657; color:white; border:none; padding:8px 15px; border-radius:6px; cursor:pointer; }
-        .filters button:hover { background:#68212f; }
-        .pagination { margin-top:20px; text-align:center; }
-        .pagination a { display:inline-block; padding:8px 12px; margin:0 5px; border:1px solid #872657; border-radius:4px; text-decoration:none; color:#872657; }
-        .pagination a.active, .pagination a:hover { background:#872657; color:white; }
-        /* Responsive adjustments */
-        @media (max-width: 600px) {
-            main { padding:1rem; margin-left:0; }
-            .events-container { grid-template-columns:1fr; }
-            .filters { flex-direction:column; }
-            .filters select, .filters button { width:100%; }
-            
+<style>
+    /* Global styles with lesbian flag colors */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+/* On mobile: sidebar overlays, so main should be full width */
+@media (max-width: 768px) {
+  main {
+    margin-left: 0;
+  }
+}
+
+body {
+  font-family: 'poppins', sans-serif;
+  display: flex;
+  background: #ffffff;
+  color: var(--text-dark);
+  line-height: 1.6;
+}
+
+.container {
+  display: flex;
+  width: 100%;
+}
+
+/* Main content */
+main {
+  margin-left: 240px;
+  padding: 2rem;
+  flex: 1;
+  min-height: 100vh;
+  margin-top: 60px;  /* space for topbar */
+}
+
+    .btn { 
+        background:#872657; 
+        color:white; 
+        padding:10px 20px; 
+        border-radius:5px; 
+        text-decoration:none; 
+    }
+
+    .events-container { 
+        display:grid; 
+        grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); 
+        gap:20px; 
+        margin-top:20px; 
+    }
+
+    .event-card { 
+        background:#f8f0f4ff; 
+        border-radius:8px; 
+        box-shadow:0 2px 8px rgba(0,0,0,0.1); 
+        transition:0.3s; 
+    }
+    .event-card:hover { transform:scale(1.02); }
+
+    .event-card img { 
+        width:100%; 
+        height:180px; 
+        object-fit:cover; 
+        border-top-left-radius:8px; 
+        border-top-right-radius:8px; 
+    }
+
+    .event-info { padding:15px; }
+
+    .event-date { 
+        color:#c0392b; 
+        font-weight:bold; 
+        margin-bottom:10px; 
+    }
+
+    .ticket-btn { 
+        background:#e74c3c; 
+        color:white; 
+        padding:8px 12px; 
+        border-radius:5px; 
+        text-decoration:none; 
+        display:inline-block;
+    }
+    .ticket-btn:hover { background:#c0392b; }
+
+    .filters { 
+        margin:20px 0; 
+        display:flex; 
+        gap:10px; 
+        flex-wrap:wrap;
+    }
+    .filters select { 
+        padding:8px; 
+        border:1px solid #ccc; 
+        border-radius:6px; 
+        flex:1; 
+        min-width:120px;
+    }
+    .filters button { 
+        background:#872657; 
+        color:white; 
+        border:none; 
+        padding:8px 15px; 
+        border-radius:6px; 
+        cursor:pointer; 
+    }
+    .filters button:hover { background:#68212f; }
+
+    .pagination { 
+        margin-top:20px; 
+        text-align:center; 
+    }
+    .pagination a { 
+        display:inline-block; 
+        padding:8px 12px; 
+        margin:0 5px; 
+        border:1px solid #872657; 
+        border-radius:4px; 
+        text-decoration:none; 
+        color:#872657; 
+    }
+    .pagination a.active, 
+    .pagination a:hover { 
+        background:#872657; 
+        color:white; 
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        main { padding:1rem; margin-left:0; }
+        .events-container { grid-template-columns:1fr; }
+        .filters { flex-direction:column; align-items:stretch; }
+        .filters select, 
+        .filters button { width:100%; }
+        .event-card img { height:160px; }
+    }
+
+    @media (max-width: 480px) {
+        .event-card img { height:140px; }
+        .btn, .ticket-btn { 
+            padding:10px; 
+            font-size:0.9rem; 
         }
-    </style>
+        .pagination a { 
+            padding:6px 10px; 
+            margin:0 3px; 
+            font-size:0.85rem; 
+        }
+    }
+</style>
+
 </head>
 <body>
 <div class="container">

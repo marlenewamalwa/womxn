@@ -10,12 +10,15 @@
   transition: transform 0.3s ease-in-out;
   z-index: 999;
 }
+.logo {
+  display: none;
+}
 
 /* Topbar */
 .topbar {
   position: fixed;
   top: 0;
-  left: 200px; /* matches sidebar width */
+  left: 220px; /* matches sidebar width */
   right: 0;
   height: 60px;
   background: #ffe6f0;
@@ -41,6 +44,29 @@
   cursor: pointer;
   border: none;
   font-size: 1.2rem;
+}
+
+/* --- Lavender Logo (Topbar only) --- */
+.topbar .logo {
+  font-size: 1.4rem;
+  font-weight: bold;
+  font-family: 'Macondo', cursive;
+  color: #872657;
+  text-decoration: none;
+  display: block;
+  margin: 0 auto; /* helps keep it centered */
+}
+
+.topbar .logo:hover {
+  color: #D462A6;
+  transition: color 0.3s ease;
+}
+
+/* Ensure center alignment with flex */
+.topbar-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 /* User Info */
@@ -98,23 +124,28 @@
   background-color: #fff;
 }
 
-.sidebar h1 {
-  font-family:  macondo, sans-serif;
-  font-size: 2rem;
-  text-align: center;
-  margin: 20px 0;
-  color: #872657;
-  letter-spacing: 1.5px;
+/* Topbar Right Buttons */
+.topbar-right {
+  display: flex;
+  gap: 0.8rem;
+  margin-left: auto;
 }
 
-
-
-/* Topbar Logo */
-.topbar .logo {
+.topbar-btn {
   font-size: 1.2rem;
-  font-weight: bold;
-  color: #872657;
   text-decoration: none;
+  color: #872657;
+  padding: 0.3rem 0.6rem;
+  border-radius: 50%;
+  transition: background 0.3s ease;
+}
+
+.topbar-btn:hover {
+  background: #D462A6;
+}
+
+.topbar-left {
+  display: flex;
 }
 
 /* Search */
@@ -159,46 +190,25 @@
   background: #D462A6;
 }
 
-/* Right buttons */
-.topbar-right {
-  display: flex;
-  gap: 0.8rem;
- margin-left: auto;
-}
-
-.topbar-btn {
-  font-size: 1.2rem;
-  text-decoration: none;
-  color: #872657;
-  padding: 0.3rem 0.6rem;
-  border-radius: 50%;
-  transition: background 0.3s ease;
-}
-
-.topbar-btn:hover {
-  background: #D462A6;
-}
-
 /* Mobile Responsive */
 @media (max-width: 768px) {
   /* Show burger button */
   .sidebar-toggle {
     display: block;
+    
   }
   
   /* Topbar spans full width */
   .topbar {
     left: 0;
     width: 100%;
-    padding: 0 4rem;
-    
   }
 
   /* Hide sidebar by default on mobile */
   .sidebar {
     transform: translateX(-100%);
     top: 60px; /* below topbar */
-    height: calc(100vh - 60px);
+   height:auto;
     box-shadow: 2px 0 8px rgba(0,0,0,0.1);
   }
   
@@ -207,54 +217,21 @@
     transform: translateX(0);
   }
 
-  /* Hide search form on mobile, show search icon */
-  .search-form {
+  /* Hide search + right buttons on mobile */
+  .search-form, .topbar-right, .topbar-btn {
     display: none;
   }
-  
-  .search-icon {
-    display: none;
+
+  /* Center topbar logo properly */
+  .topbar-center {
+    position: relative;
+    left: auto;
+    transform: none;
+    margin: 0 auto;
   }
-  
-  /* Adjust topbar buttons on mobile */
-  .topbar-right {
-    display: none;
-  }
-  
-  .topbar-btn {
-   display: none;
-  }
-  
-  /* Make topbar items more compact on mobile */
+
   .topbar .logo {
-    font-size: 1rem;
-    flex-shrink: 0;
-  font-family: 'Macondo', cursive;
-
-
-  }
-  
-  .search-icon {
-    padding: 0.2rem 0.3rem;
-    font-size: 0.9rem;
-    flex-shrink: 0;
-  }
-}
-/* Logo - Desktop and Mobile */
-.logo {
-  display: none;
-}
-
-.logo:hover {
-  color: #D462A6;
-  transition: color 0.3s ease;
-}
-
-/* Mobile adjustments */
-@media (max-width: 768px) {
-.logo {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     letter-spacing: 0.5px;
   }
 }
-

@@ -1,4 +1,4 @@
-<?php
+<?php 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -8,12 +8,12 @@ $pic = $isLoggedIn && !empty($_SESSION['profile_pic']) ? $_SESSION['profile_pic'
 ?>
 <!-- sidebar.php -->
 
-    <!-- Burger Toggle -->
+<!-- Burger Toggle -->
 <button class="sidebar-toggle">☰</button>
 
 <!-- Sidebar -->
 <nav class="sidebar" id="sidebar">
-  
+
 <script>
 const toggleBtn = document.querySelector('.sidebar-toggle');
 const sidebar = document.querySelector('.sidebar');
@@ -22,10 +22,6 @@ toggleBtn.addEventListener('click', () => {
     sidebar.classList.toggle('active');
 });
 </script>
-
-<h1 class="sidebar-logo">
-  <span>LAVENDER</span>
-</h1>
 
   <div class="user-info">
     <img src="<?= htmlspecialchars($pic) ?>" alt="Profile" class="nav-profile-pic">
@@ -46,7 +42,5 @@ toggleBtn.addEventListener('click', () => {
     <li><a href="events.php">Events</a></li>
     <li><a href="exchange.php">Opportunities</a></li>
   </ul>
-  
+
 </nav>
-
-

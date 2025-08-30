@@ -1,14 +1,13 @@
 <!-- topbar.php -->
 <header class="topbar">
   <div class="topbar-left">
-    
+    <!-- empty for now, could hold burger later -->
   </div>
 
+  <div class="topbar-center">
+    <a href="index.php" class="logo">LAVENDER</a>
+  </div>
 
-<div class="topbar-center">
-  <a href="#" class="logo">Lavender</a>
-
-</div>
   <div class="topbar-right">
     <a href="create_post.php" class="topbar-btn">＋</a>
     <a href="messages.php" class="topbar-btn">💌</a>

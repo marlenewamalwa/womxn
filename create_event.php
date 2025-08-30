@@ -31,8 +31,20 @@ if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
 }
 
 
-  $stmt = $conn->prepare("INSERT INTO events (title, description, event_date, image, ticket_link) VALUES (?, ?, ?, ?, ?)");
-$stmt->bind_param("sssss", $title, $description, $event_date, $imageName, $ticket_link);
+  $stmt = $conn->prepare("INSERT INTO events 
+    (title, description, event_date, event_time, location, image, ticket_link, user_id) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+$stmt->bind_param("sssssssi", 
+    $title, 
+    $description, 
+    $event_date, 
+    $event_time, 
+    $location, 
+    $imageName, 
+    $ticket_link, 
+    $user_id
+);
+
   $stmt->execute();
   $stmt->close();
 
@@ -45,26 +57,56 @@ $stmt->bind_param("sssss", $title, $description, $event_date, $imageName, $ticke
 <html>
 <head>
   <title>Create Event</title>
-  <style>
-
+   <style>
     body {
       font-family: Poppins, sans-serif;
       background-color: #ffe6f0;
       margin: 0;
       padding: 0;
     }
+
     form {
       max-width: 600px;
-      margin: 40px auto;
+      margin: 20px auto;
       background: #fff;
       padding: 20px;
       border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
-    input, textarea {
-      width: 80%;
+
+    input, textarea, button {
+      width: 100%;
       margin-bottom: 15px;
-      padding: 10px;
+      padding: 12px;
       font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+
+    button {
+      background: #ff4d88;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #e63971;
+    }
+    /* Mobile adjustments */
+    @media (max-width: 600px) {
+      form {
+        margin: 10px;
+        padding: 15px;
+      }
+
+      input, textarea {
+        font-size: 14px;
+        padding: 10px;
+      }
     }
   </style>
 </head>
