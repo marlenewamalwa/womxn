@@ -123,6 +123,20 @@
 .sidebar ul li a.active {
   background-color: #fff;
 }
+ 
+/* Sidebar Separator */
+.sidebar-separator {
+  border: none;
+  border-top: 1px solid #ccc;
+  margin: 3rem 0;
+}
+.sidebar-text {
+  font-size: 0.9rem;
+  color: #471f04;
+  font-family: 'Macondo', sans-serif;
+  text-align: center;
+  margin-top: 1rem;
+}
 
 /* Topbar Right Buttons */
 .topbar-right {
@@ -217,9 +231,23 @@
     transform: translateX(0);
   }
 
-  /* Hide search + right buttons on mobile */
-  .search-form, .topbar-right, .topbar-btn {
+/* Hide search form, show search icon */
+  .search-form {
     display: none;
+  }
+  .search-icon {
+    display: block;
+  }
+   /* Adjust sidebar padding */
+  .sidebar {
+    padding: 1rem 0.5rem;
+  }
+  .sidebar ul li {
+    margin: 0.5rem 0;
+  }
+  /*right buttons spacing */
+  .topbar-right {
+    gap: 0.5rem;
   }
 
   /* Center topbar logo properly */

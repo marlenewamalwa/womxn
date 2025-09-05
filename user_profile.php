@@ -101,20 +101,20 @@ $stmt->close();
     <link rel="stylesheet" href="styles.css"> 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700;800&display=swap" rel="stylesheet" />
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Poppins', sans-serif;
-            display: flex;
-            background-color: #ffe6f0;
-            color: #2b2b2b;
-        }
-        .container { 
-             display: flex;
-             width: 100%; 
-            }
-        main { margin-left: 240px; 
-            padding: 2rem;
-             flex: 1; }
+         * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #fff7fa, #f0e8f2);
+      color: var(--text);
+    }
+
+    .container { display: flex; min-height: 100vh; }
+
+    main { flex: 1; padding: 2rem; margin-left: 240px;
+      margin-top: 60px; /* space for topbar */ 
+    min-height: 100vh;
+}
         .profile-page {
             max-width: 500px;
               
@@ -154,11 +154,24 @@ $stmt->close();
         .user-section li:last-child { border-bottom: none; }
         .excerpt { color: #555; font-size: 0.9rem; display: block; margin-top: 3px; }
         .timeago { color: #888; font-size: 0.85rem; margin-left: 5px; }
+        .profile-actions { margin-bottom: 20px; display: flex; gap: 10px; justify-content: center; }
+        .profile-actions a { text-decoration: none; }
+        .profile-actions a.btn { padding: 8px 16px; font-size: 0.9rem; }
+        .member-list, .chat-list { max-height: 300px; overflow-y: auto; }
+        .member-item, .chat-item { padding: 8px; border-bottom: 1px solid #eee; cursor: pointer; }
+        .member-item:last-child, .chat-item:last-child { border-bottom: none; }
+
+        /*responsive design*/
+        @media (max-width: 992px) { main { margin-left: 0; padding: 1rem; } }
+
+
     </style>
 </head>
 <body>
     <div class="container">
         <?php include 'sidebar.php'; ?>
+     
+            <?php include 'topbar.php'; ?>
         <main>
             <div class="profile-page">
                 <div class="profile-header">

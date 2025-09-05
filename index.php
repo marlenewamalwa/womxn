@@ -346,7 +346,7 @@ main {
 }
 
 .post-card {
-  background: #f8f0f4ff;
+  background: #fff;
   padding: 1.2rem;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.05);
@@ -396,7 +396,72 @@ main {
 .btn:hover {
   background: #a62265;
 }
+/* Comments Section */
+.comments {
+  margin-top: 1rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid #e0c9d9;
+}
 
+.comment {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin-bottom: 0.8rem;
+}
+
+.comment strong {
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.comment-text {
+  background: #fff;
+  padding: 0.6rem 0.9rem;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  color: #444;
+  max-width: 80%;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.comment small {
+  display: block;
+  font-size: 0.75rem;
+  color: #888;
+  margin-top: 0.3rem;
+}
+
+.add-comment {
+  margin-top: 0.8rem;
+  display: flex;
+  gap: 0.6rem;
+}
+
+.add-comment input[type="text"] {
+  flex: 1;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.add-comment button {
+  background: #d63384;
+  border: none;
+  color: #fff;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.add-comment button:hover {
+  background: #a62265;
+}
+
+ 
 /* Responsive grid */
 @media (max-width: 900px) {
   .posts-grid {
@@ -842,7 +907,6 @@ footer a:hover {
     </div>
   </section>
         <!-- Latest Posts -->
-
 <section class="latest-posts">
   <h2> Latest Community Stories</h2>
 
@@ -861,25 +925,57 @@ footer a:hover {
 
                   <p><?= nl2br(htmlspecialchars($post['content'])) ?></p>
 
-               <?php if (!empty($post['image'])): ?>
-    <img src="<?= htmlspecialchars($post['image']) ?>" class="post-image" alt="Post Image">
-<?php elseif (!empty($post['video_path'])): ?>
-    <video controls class="post-image">
-        <source src="<?= htmlspecialchars($post['video_path']) ?>" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
-<?php endif; ?>
+                  <?php if (!empty($post['image'])): ?>
+                      <img src="<?= htmlspecialchars($post['image']) ?>" class="post-image" alt="Post Image">
+                  <?php elseif (!empty($post['video_path'])): ?>
+                      <video controls class="post-image">
+                          <source src="<?= htmlspecialchars($post['video_path']) ?>" type="video/mp4">
+                          Your browser does not support the video tag.
+                      </video>
+                  <?php endif; ?>
 
                   <small><?= date("F j, Y, g:i a", strtotime($post['created_at'])) ?></small>
+
+                  <!-- ✅ Comments Section -->
+                  <div class="comments">
+                    <?php
+                      $post_id = $post['id'];
+                      $stmt = $conn->prepare("SELECT comments.comment_text, comments.created_at, users.name 
+                                               FROM comments 
+                                               JOIN users ON comments.user_id = users.id 
+                                               WHERE comments.post_id = ? 
+                                               ORDER BY comments.created_at ASC");
+                      $stmt->bind_param("i", $post_id);
+                      $stmt->execute();
+                      $comments_result = $stmt->get_result();
+
+                      if ($comments_result->num_rows > 0):
+                          while ($comment = $comments_result->fetch_assoc()): ?>
+                              <div class="comment">
+                                  <strong><?= htmlspecialchars($comment['name']) ?>:</strong>
+                                  <?= nl2br(htmlspecialchars($comment['comment_text'])) ?>
+                                  <small><?= date("F j, Y, g:i a", strtotime($comment['created_at'])) ?></small>
+                              </div>
+                          <?php endwhile;
+                      else: ?>
+                          <div class="no-comments">No comments yet.</div>
+                      <?php endif;
+                      $stmt->close();
+                    ?>
+                  </div>
+
+                  <!-- ✅ Add Comment Form -->
+                  <form action="submit_comment.php" method="POST" class="comment-form">
+                      <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
+                      <textarea name="comment_text" placeholder="Write a comment..." required></textarea>
+                      <button type="submit">Post</button>
+                  </form>
               </div>
           <?php endforeach; ?>
       </div>
   <?php endif; ?>
-
-  <div class="view-more">
-      <a href="feed.php" class="btn">View Full Feed</a>
-  </div>
 </section>
+
 
       <!-- Latest Events -->
       <section class="latest-events">

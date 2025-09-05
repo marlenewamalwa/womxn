@@ -43,4 +43,11 @@ toggleBtn.addEventListener('click', () => {
     <li><a href="exchange.php">Opportunities</a></li>
   </ul>
 
+  <hr class="sidebar-separator" >
+   <p class="sidebar-text">CONNECTING QUEER WOMEN IN KENYA</p>
+    </hr>
+
 </nav>
+
+<!-- End of sidebar.php -->
+

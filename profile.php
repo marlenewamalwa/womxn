@@ -196,8 +196,12 @@ $stmt->close();
     .member-item:hover, .chat-item:hover { background: #f9f1f5; }
     .chat-avatar { display: flex; align-items: center; gap: .75rem; }
     .chat-avatar img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #eee; }
-
-    @media (max-width: 992px) { main { margin-left: 0; padding: 1rem; } }
+/* Responsive */
+    @media (max-width: 900px) {
+      main { margin-left: 0; padding: 1rem; }
+      .container { flex-direction: column; }
+      .profile-actions { flex-direction: column; }
+    }
   </style>
 </head>
 <body>
