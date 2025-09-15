@@ -102,7 +102,9 @@ $stmt->close();
                     <i class="fas fa-inbox"></i>
                     <p>No conversations yet. Start messaging someone!</p>
                 </div>
+                 
             <?php endif; ?>
+             
         </div>
     </main>
 </div>

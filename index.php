@@ -185,77 +185,7 @@ main {
     box-shadow: var(--shadow-medium);
 }
 
-/* Hero with background image */
-.hero {
-  background: url("uploads/paint.jpeg") no-repeat center center/cover;
-  position: relative;
-  border-radius: 24px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-}
 
-.hero-overlay {
-  background: rgba(0, 0, 0, 0.5); /* dark overlay for readability */
-  width: 100%;
-   border-radius: 24px 24px;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
-}
-
-.hero-content {
-  max-width: 600px;
-  text-align: center;
-}
-
-.hero h1 {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-}
-.hero h1 span {
-  color:var(--lesbian-white);
-  font-family:  macondo, sans-serif;
-}
-.hero p {
-  margin: 1rem 0 2rem;
-  font-size: 1.2rem;
-}
-
-.hero-ctas .cta-btn {
-    display: inline-block;
-    background-color: var(--lesbian-orange);
-    color: white;
-    padding: 1rem 2rem;
-    text-decoration: none;
-    border-radius: 50px;
-    font-weight: 600;
-    font-size: 1rem;
-    margin: 0.5rem;
-    transition: all 0.3s ease;
-    border: none;
-    cursor: pointer;
-}
-
-.btn:hover {
-    background-color: var(--lesbian-dark-pink);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(165, 0, 98, 0.3);
-}
-.hero-ctas .cta-btn.secondary {
-    background: transparent;
-    color: white;
-    border: 2px solid var(--lesbian-orange);
-}
-
-.cta-btn secondary:hover {
-    background: var(--lesbian-light-pink);
-    color: white;
-    border-color: var(--lesbian-light-pink);
-}
 
 /* Buttons */
 .btn {
@@ -323,6 +253,8 @@ main {
   background: #f8f0f4ff;
   border-radius: 24px;
   margin-bottom: 4rem;
+  margin-top: 2rem;
+  box-shadow: var(--shadow-soft);
 }
 
 .latest-posts h2 {
@@ -843,7 +775,6 @@ footer a:hover {
 
 @media (max-width: 600px) {
   .posts-grid,
-  .event-list,
   .community-stats {
     grid-template-columns: 1fr;
   }
@@ -873,39 +804,32 @@ footer a:hover {
 
     <!-- Main Content -->
     <main>
-           <!-- Hero Section -->
-<section class="hero">
-  <div class="hero-overlay">
-    <div class="hero-content">
-      <p>Connecting queer women in Kenya through community, events, and opportunities.</p>
-      <div class="hero-ctas">
-        <a href="community.php" class="cta-btn primary">See the Community</a>
-        <a href="about.php" class="cta-btn secondary">Learn More</a>
+      <!-- Search Bar -->
+      <div class="search">
+        <form action="" method="GET">
+          <input type="text" name="q" placeholder="Search for keywords..." value="<?= isset($_GET['q']) ? htmlspecialchars($_GET['q']) : '' ?>">
+          <button type="submit" class="search-btn">Search</button>
+        </form>
       </div>
-    </div>
-  </div>
-</section>
+      <?php if (!empty($searchResults)): ?>
+          <div class="results">
+              <h3>Search Results:</h3>
+              <ul>
+                  <?php foreach ($searchResults as $result): ?>
+                      <li><?= htmlspecialchars($result) ?></li>
+                  <?php endforeach; ?>
+              </ul>
+          </div>
+      <?php elseif (isset($_GET['q'])): ?>
+          <div class="results">
+              <h3>No results found for "<?= htmlspecialchars($_GET['q']) ?>"</h3>
+          </div>
+
+      <?php endif; ?>
+      <!-- Hero Section -->
 
 
-  <!-- Quick Links / Cards -->
-  <section class="quick-links">
-   
-    <div class="card">
-      <h2>Community</h2>
-      <p>Find safe spaces, connect, and build friendships.</p>
-      <a href="community.php" class="cta-link">Explore →</a>
-    </div>
-    <div class="card">
-      <h2>Events</h2>
-      <p>Stay updated on gatherings, workshops, and meetups.</p>
-      <a href="events.php" class="cta-link">See Events →</a>
-    </div>
-    <div class="card">
-      <h2>Opportunities</h2>
-      <p>Access scholarships, jobs, and collaborations.</p>
-      <a href="exchange.php" class="cta-link">Get Started →</a>
-    </div>
-  </section>
+
         <!-- Latest Posts -->
 <section class="latest-posts">
   <h2> Latest Community Stories</h2>

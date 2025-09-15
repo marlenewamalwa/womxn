@@ -24,7 +24,10 @@ toggleBtn.addEventListener('click', () => {
 </script>
 
   <div class="user-info">
-    <img src="<?= htmlspecialchars($pic) ?>" alt="Profile" class="nav-profile-pic">
+   <img src="<?= htmlspecialchars(getProfilePic()) ?>" 
+     alt="Profile Picture" class="profile-pic">
+
+
     <?php if ($isLoggedIn): ?>
       <a href="profile.php" class="username-link">
         <p><?= htmlspecialchars($_SESSION['user_name']) ?></p>

@@ -9,7 +9,7 @@
   </div>
 
   <div class="topbar-right">
-    <a href="create_post.php" class="topbar-btn">＋</a>
+    <a href="feed.php" class="topbar-btn">＋</a>
     <a href="messages.php" class="topbar-btn">💌</a>
   </div>
 </header>

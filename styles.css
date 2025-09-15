@@ -75,6 +75,15 @@
   margin-bottom: 20px;
   color: #872657;
 }
+ .nav-profile-pic {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 0.5rem;
+}  
+
+  
 
 .nav-profile-pic {
   width: 60px;

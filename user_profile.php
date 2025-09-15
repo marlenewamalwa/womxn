@@ -178,7 +178,7 @@ $stmt->close();
                     <img src="<?= htmlspecialchars($member['profile_pic'] ?: 'uploads/default.jpeg') ?>" 
                          alt="Profile Picture" class="profile-pic">
                     <h1><?= htmlspecialchars($member['name']) ?></h1>
-                    <p class="pronouns"><?= htmlspecialchars($member['pronouns']) ?></p>                 
+                                    
                 </div>
                 <div class="profile-actions">
                     <?php if ($id !== $loggedInUser): ?>
